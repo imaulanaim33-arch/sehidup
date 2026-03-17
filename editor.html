@@ -980,17 +980,7 @@ body {
     if (el && val !== undefined && val !== null) el.value = val
   }
 
-  // expose to window for onclick
-  window.goStep = goStep
-  window.nextStep = nextStep
-  window.prevStep = prevStep
-  window.selectTemplate = selectTemplate
-  window.updatePreview = updatePreview
-  window.updateSlug = updateSlug
-  window.handleImg = handleImg
-  window.handleImgMulti = handleImgMulti
-  window.saveData = saveData
-  window.publishInv = publishInv
+  // expose to window for onclick - assigned after all functions defined below
   // ── STATE
   const state = {
     template: 'modern',
@@ -1285,6 +1275,16 @@ body {
     markUnsaved();
     autoSaveTimer = setTimeout(() => saveData(), 3000);
   });
+
+  // ── EXPOSE TO WINDOW (after all functions defined)
+  window.goStep = goStep
+  window.nextStep = nextStep
+  window.prevStep = prevStep
+  window.selectTemplate = selectTemplate
+  window.updatePreview = updatePreview
+  window.updateSlug = updateSlug
+  window.saveData = saveData
+  window.publishInv = publishInv
 
   // ── INIT
   updatePreview();
