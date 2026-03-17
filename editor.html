@@ -832,7 +832,7 @@ body {
       <div class="field-group">
         <label class="field-label">URL Undangan <span>*</span></label>
         <input type="text" class="field-input" id="url-slug" placeholder="rizky-aulia" oninput="updateSlug()">
-        <span class="field-hint" id="url-preview">sehidup.id/rizky-aulia</span>
+        <span class="field-hint" id="url-preview">sehidup.vercel.app/rizky-aulia</span>
       </div>
       <div class="field-group">
         <label class="field-label">Musik Latar (opsional)</label>
@@ -963,7 +963,7 @@ body {
     setVal('rek2', d.amplop?.rek2)
     setVal('nama-rek2', d.amplop?.nama2)
     setVal('url-slug', data.slug)
-    if (data.slug) document.getElementById('url-preview').textContent = 'sehidup.id/' + data.slug
+    if (data.slug) document.getElementById('url-preview').textContent = 'sehidup.vercel.app/' + data.slug
 
     // Restore template selection
     document.querySelectorAll('.tpl-option').forEach(o => o.classList.remove('selected'))
@@ -1043,7 +1043,7 @@ body {
     const val = document.getElementById('url-slug').value
       .toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
     document.getElementById('url-slug').value = val;
-    document.getElementById('url-preview').textContent = 'sehidup.id/' + (val || 'url-undangan');
+    document.getElementById('url-preview').textContent = 'sehidup.vercel.app/' + (val || 'url-undangan');
     state.slug = val;
     markUnsaved();
   }
@@ -1065,7 +1065,7 @@ body {
 
     const slug = state.slug || generateSlug()
     document.getElementById('url-slug').value = slug
-    document.getElementById('url-preview').textContent = 'sehidup.id/' + slug
+    document.getElementById('url-preview').textContent = 'sehidup.vercel.app/' + slug
     state.slug = slug
 
     const payload = {
@@ -1106,7 +1106,7 @@ body {
       .update({ status: 'active' })
       .eq('id', invitationId)
     if (error) { showToast('Gagal publikasi: ' + error.message); return; }
-    showToast('Undangan dipublikasi! 🎉 sehidup.id/' + state.slug)
+    showToast('Undangan dipublikasi! 🎉 sehidup.vercel.app/' + state.slug)
   }
 
   function generateSlug() {
@@ -1210,7 +1210,7 @@ body {
           </div>
         </div>` : ''}
 
-        <div class="watermark">Dibuat dengan sehidup.id</div>
+        <div class="watermark">Dibuat dengan sehidup.vercel.app</div>
       </div>
     `;
   }

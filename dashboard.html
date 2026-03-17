@@ -837,7 +837,7 @@ body {
           </div>
           <div class="inv-actions">
             <button class="inv-action-btn edit" onclick="window.location.href='editor.html'">✏️ Edit</button>
-            <button class="inv-action-btn share" onclick="openShare('sehidup.id/rizky-aulia')">🔗 Bagikan</button>
+            <button class="inv-action-btn share" onclick="openShare('sehidup.vercel.app/rizky-aulia')">🔗 Bagikan</button>
             <button class="inv-action-btn view" onclick="window.location.href='undangan-digital.html'">👁️ Lihat</button>
           </div>
         </div>
@@ -887,7 +887,7 @@ body {
       <button class="modal-close" onclick="closeShareModal()">✕</button>
     </div>
     <div class="share-url">
-      <span class="share-url-text" id="share-url-text">sehidup.id/rizky-aulia</span>
+      <span class="share-url-text" id="share-url-text">sehidup.vercel.app/rizky-aulia</span>
       <button class="copy-btn" onclick="copyShareUrl()">Salin</button>
     </div>
     <div class="share-options">
@@ -1006,10 +1006,10 @@ body {
           <div class="inv-meta">
             <div class="inv-meta-item"><span>👁️</span><span>${inv.view_count || 0} dilihat</span></div>
           </div>
-          <div class="inv-expiry ok"><span>🔗</span> sehidup.id/${inv.slug}</div>
+          <div class="inv-expiry ok"><span>🔗</span> sehidup.vercel.app/${inv.slug}</div>
           <div class="inv-actions">
             <button class="inv-action-btn edit" onclick="window.location.href='editor.html?id=${inv.id}'">✏️ Edit</button>
-            <button class="inv-action-btn share" onclick="openShare('sehidup.id/${inv.slug}')">🔗 Bagikan</button>
+            <button class="inv-action-btn share" onclick="openShare('sehidup.vercel.app/${inv.slug}')">🔗 Bagikan</button>
             <button class="inv-action-btn view" onclick="window.open('undangan-digital.html?slug=${inv.slug}')">👁️ Lihat</button>
           </div>
         </div>`
