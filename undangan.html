@@ -825,6 +825,12 @@ body {
     // Cover
     document.getElementById('cv-ornament').textContent = orn
     document.getElementById('cv-names').innerHTML = `${pria}<em>&amp;</em>${wanita}`
+    if (d.photos?.main) {
+      const photoEl = document.createElement('img')
+      photoEl.src = d.photos.main
+      photoEl.style.cssText = 'width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(196,122,90,0.3);margin-bottom:0.5rem;'
+      document.getElementById('cover').insertBefore(photoEl, document.getElementById('cv-names'))
+    }
 
     // Hero
     document.getElementById('hero-ornament').textContent = orn
@@ -890,6 +896,28 @@ body {
       html += amplopCard(d.amplop.bank1, d.amplop.rek1, d.amplop.nama1)
       if (d.amplop.bank2 && d.amplop.rek2) html += amplopCard(d.amplop.bank2, d.amplop.rek2, d.amplop.nama2)
       document.getElementById('amplop-cards').innerHTML = html
+    }
+
+    // Couple avatars - use real photos if available
+    if (d.photos?.main) {
+      document.getElementById('avatar-pria').innerHTML = `<img src="${d.photos.main}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+      document.getElementById('avatar-wanita').innerHTML = `<img src="${d.photos.main}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+    }
+
+    // Gallery
+    if (d.photos?.gallery?.length) {
+      const galSection = document.createElement('section')
+      galSection.className = 'inv-section reveal'
+      galSection.style.background = '#fff'
+      galSection.innerHTML = `
+        <span class="inv-eyebrow">Galeri</span>
+        <h2 class="inv-title">Momen <em>Kami</em></h2>
+        <div class="inv-divider"><div class="inv-divider-dot"></div></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:1.5rem;">
+          ${d.photos.gallery.map(url => `<img src="${url}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;">`).join('')}
+        </div>`
+      // Insert before RSVP section
+      document.querySelector('.rsvp-section').before(galSection)
     }
 
     // Footer
