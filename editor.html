@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sehidup — Editor Undangan</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Nunito:wght@200;300;400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FAF6F0;
+  --cream-dark: #F2EBE0;
+  --cream-deeper: #E8DDD0;
+  --bark: #3D2E1E;
+  --bark-mid: #6B5240;
+  --bark-soft: #9A7B65;
+  --terracotta: #C47A5A;
+  --terracotta-light: #D9967A;
+  --sage: #7C9B85;
+  --sand: #D4B896;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 300;
+  color: var(--bark);
+  background: var(--cream-dark);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── TOPBAR ── */
+.editor-topbar {
+  height: 56px;
+  background: #fff;
+  border-bottom: 1px solid var(--cream-deeper);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+.topbar-left { display: flex; align-items: center; gap: 1rem; }
+
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--bark-soft);
+  text-decoration: none;
+  font-weight: 400;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  transition: all 0.2s;
+  border: 1px solid var(--cream-deeper);
+}
+.back-btn:hover { background: var(--cream-dark); color: var(--bark); }
+
+.editor-title {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--bark);
+}
+
+.topbar-center { display: flex; align-items: center; gap: 0.4rem; }
+
+.preview-toggle {
+  display: flex;
+  background: var(--cream-dark);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+.pt-btn {
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.7rem;
+  font-weight: 400;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--bark-soft);
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.pt-btn.active { background: #fff; color: var(--bark); box-shadow: 0 1px 4px rgba(61,46,30,0.08); }
+
+.topbar-right { display: flex; align-items: center; gap: 0.6rem; }
+
+.save-indicator {
+  font-size: 0.68rem;
+  color: var(--bark-soft);
+  font-weight: 300;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.save-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sage);
+}
+.save-dot.unsaved { background: var(--terracotta); }
+
+.btn-save {
+  padding: 0.5rem 1.2rem;
+  background: var(--cream-dark);
+  color: var(--bark-mid);
+  border: 1px solid var(--cream-deeper);
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-save:hover { background: var(--cream-deeper); }
+
+.btn-publish {
+  padding: 0.5rem 1.2rem;
+  background: var(--terracotta);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 10px rgba(196,122,90,0.3);
+}
+.btn-publish:hover { background: var(--terracotta-light); }
+
+/* ── EDITOR BODY ── */
+.editor-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  overflow: hidden;
+}
+
+/* ── LEFT — FORM PANEL ── */
+.form-panel {
+  background: #fff;
+  border-right: 1px solid var(--cream-deeper);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-panel::-webkit-scrollbar { width: 3px; }
+.form-panel::-webkit-scrollbar-track { background: transparent; }
+.form-panel::-webkit-scrollbar-thumb { background: var(--cream-deeper); border-radius: 2px; }
+
+/* steps nav */
+.steps-nav {
+  padding: 1rem 1.2rem;
+  display: flex;
+  gap: 0.3rem;
+  border-bottom: 1px solid var(--cream-darker, #E8DDD0);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.steps-nav::-webkit-scrollbar { display: none; }
+
+.step-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 100px;
+  font-size: 0.68rem;
+  font-weight: 400;
+  cursor: pointer;
+  border: 1px solid var(--cream-deeper);
+  background: transparent;
+  color: var(--bark-soft);
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.step-btn.active {
+  background: var(--terracotta);
+  border-color: var(--terracotta);
+  color: #fff;
+  font-weight: 500;
+}
+.step-btn.done {
+  background: rgba(124,155,133,0.1);
+  border-color: rgba(124,155,133,0.3);
+  color: var(--sage);
+}
+
+/* form sections */
+.form-section {
+  padding: 1.5rem 1.3rem;
+  display: none;
+  flex-direction: column;
+  gap: 1.1rem;
+  animation: fadeIn 0.25s ease;
+}
+.form-section.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-section-title {
+  font-family: 'Lora', serif;
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--bark);
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--cream-dark);
+}
+
+.field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+
+.field-label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--bark-mid);
+  letter-spacing: 0.04em;
+}
+.field-label span { color: var(--terracotta); }
+
+.field-input, .field-select, .field-textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  background: var(--cream);
+  border: 1.5px solid var(--cream-deeper);
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 300;
+  color: var(--bark);
+  outline: none;
+  transition: all 0.2s ease;
+}
+.field-input::placeholder { color: var(--bark-soft); opacity: 0.5; }
+.field-input:focus, .field-select:focus, .field-textarea:focus {
+  border-color: var(--terracotta);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(196,122,90,0.08);
+}
+.field-select { cursor: pointer; }
+.field-textarea { resize: vertical; min-height: 70px; }
+
+.field-hint {
+  font-size: 0.63rem;
+  color: var(--bark-soft);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* template picker */
+.template-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.tpl-option {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--cream-deeper);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tpl-option:hover { border-color: var(--sand); }
+.tpl-option.selected {
+  border-color: var(--terracotta);
+  background: rgba(196,122,90,0.04);
+}
+
+.tpl-thumb {
+  width: 44px; height: 60px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+}
+.tpl-thumb.modern { background: linear-gradient(160deg, #2a1f14, #1a1208); }
+.tpl-thumb.botanical { background: linear-gradient(160deg, #f0ebe0, #e4ddd0); }
+.tpl-thumb.islami { background: linear-gradient(160deg, #1a2018, #0e1510); }
+
+.tpl-info { flex: 1; }
+.tpl-name { font-size: 0.82rem; font-weight: 500; color: var(--bark); margin-bottom: 0.15rem; }
+.tpl-desc { font-size: 0.65rem; color: var(--bark-soft); font-weight: 300; }
+.tpl-badge {
+  font-size: 0.58rem;
+  font-weight: 500;
+  padding: 0.2rem 0.5rem;
+  border-radius: 100px;
+}
+.tpl-badge.free { background: rgba(124,155,133,0.12); color: var(--sage); }
+.tpl-badge.premium { background: rgba(196,122,90,0.12); color: var(--terracotta); }
+
+/* image upload */
+.img-upload {
+  border: 2px dashed var(--cream-deeper);
+  border-radius: 12px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.img-upload:hover { border-color: var(--sand); background: var(--cream); }
+.img-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.img-upload-icon { font-size: 1.5rem; margin-bottom: 0.4rem; opacity: 0.5; }
+.img-upload-label { font-size: 0.72rem; color: var(--bark-soft); font-weight: 300; }
+.img-upload-label span { color: var(--terracotta); font-weight: 500; }
+
+/* color picker */
+.color-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.color-dot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s;
+  position: relative;
+  border: 2px solid transparent;
+}
+.color-dot:hover { transform: scale(1.15); }
+.color-dot.selected { border-color: var(--bark); }
+.color-dot.selected::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  color: #fff;
+}
+
+/* nav bottom */
+.form-nav {
+  padding: 1rem 1.3rem;
+  border-top: 1px solid var(--cream-dark);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.fn-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Nunito', sans-serif;
+  transition: all 0.2s;
+  border: none;
+}
+.fn-prev {
+  background: var(--cream-dark);
+  color: var(--bark-mid);
+  border: 1px solid var(--cream-deeper);
+}
+.fn-prev:hover { background: var(--cream-deeper); }
+.fn-next {
+  background: var(--terracotta);
+  color: #fff;
+  box-shadow: 0 2px 10px rgba(196,122,90,0.25);
+}
+.fn-next:hover { background: var(--terracotta-light); }
+
+.fn-progress {
+  font-size: 0.68rem;
+  color: var(--bark-soft);
+  font-weight: 300;
+}
+
+/* ── RIGHT — PREVIEW PANEL ── */
+.preview-panel {
+  background: var(--cream-dark);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
+  position: relative;
+}
+
+.preview-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bark-soft);
+  font-weight: 400;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.preview-label::before, .preview-label::after {
+  content: '';
+  width: 30px; height: 1px;
+  background: var(--cream-deeper);
+}
+
+/* phone frame */
+.phone-frame {
+  width: 300px;
+  background: #fff;
+  border-radius: 36px;
+  box-shadow:
+    0 0 0 8px #E8DDD0,
+    0 0 0 10px #D4C4B0,
+    0 24px 60px rgba(61,46,30,0.2);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.phone-notch {
+  height: 28px;
+  background: #E8DDD0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phone-notch-inner {
+  width: 80px; height: 10px;
+  background: #D4C4B0;
+  border-radius: 100px;
+}
+
+.phone-screen {
+  height: 520px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.phone-screen::-webkit-scrollbar { display: none; }
+
+/* ── INVITATION PREVIEW CONTENT ── */
+.inv-cover {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  position: relative;
+}
+
+/* Modern theme */
+.theme-modern .inv-cover { background: linear-gradient(160deg, #2a1f14, #1a1208); }
+.theme-modern .inv-cover-ornament { color: rgba(196,122,90,0.6); font-size: 1.5rem; margin-bottom: 0.8rem; }
+.theme-modern .inv-cover-label { font-size: 0.5rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(196,122,90,0.7); margin-bottom: 0.5rem; font-family: 'Nunito', sans-serif; font-weight: 300; }
+.theme-modern .inv-cover-names { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; color: #F0E8DC; line-height: 1.1; }
+.theme-modern .inv-cover-names em { display: block; font-size: 0.5em; font-style: normal; color: rgba(196,122,90,0.7); letter-spacing: 0.3em; margin: 0.4em 0; }
+.theme-modern .inv-cover-date { font-size: 0.55rem; color: rgba(168,136,112,0.8); letter-spacing: 0.2em; margin-top: 0.8rem; font-family: 'Nunito', sans-serif; font-weight: 300; }
+
+/* Botanical theme */
+.theme-botanical .inv-cover { background: linear-gradient(160deg, #f5f0e5, #eee5d5); }
+.theme-botanical .inv-cover-ornament { color: rgba(124,155,133,0.7); font-size: 1.5rem; margin-bottom: 0.8rem; }
+.theme-botanical .inv-cover-label { font-size: 0.5rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--bark-soft); margin-bottom: 0.5rem; font-family: 'Nunito', sans-serif; font-weight: 300; }
+.theme-botanical .inv-cover-names { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; color: var(--bark); line-height: 1.1; }
+.theme-botanical .inv-cover-names em { display: block; font-size: 0.5em; font-style: normal; color: var(--sage); letter-spacing: 0.3em; margin: 0.4em 0; }
+.theme-botanical .inv-cover-date { font-size: 0.55rem; color: var(--bark-soft); letter-spacing: 0.2em; margin-top: 0.8rem; font-family: 'Nunito', sans-serif; font-weight: 300; }
+
+/* Islami theme */
+.theme-islami .inv-cover { background: linear-gradient(160deg, #1a2018, #0e1510); }
+.theme-islami .inv-cover-ornament { color: rgba(168,184,144,0.7); font-size: 1.5rem; margin-bottom: 0.8rem; }
+.theme-islami .inv-cover-label { font-size: 0.5rem; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(168,184,144,0.7); margin-bottom: 0.5rem; font-family: 'Nunito', sans-serif; font-weight: 300; }
+.theme-islami .inv-cover-names { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-style: italic; color: #E8DCC8; line-height: 1.1; }
+.theme-islami .inv-cover-names em { display: block; font-size: 0.5em; font-style: normal; color: rgba(168,184,144,0.7); letter-spacing: 0.3em; margin: 0.4em 0; }
+.theme-islami .inv-cover-date { font-size: 0.55rem; color: rgba(128,142,112,0.8); letter-spacing: 0.2em; margin-top: 0.8rem; font-family: 'Nunito', sans-serif; font-weight: 300; }
+
+/* preview sections */
+.prev-section {
+  padding: 1.2rem 1.2rem;
+  border-top: 1px solid var(--cream-darker, #E8DDD0);
+}
+.theme-modern .prev-section { background: #110d09; border-color: rgba(196,122,90,0.1); }
+.theme-botanical .prev-section { background: #f5f0e8; border-color: rgba(212,184,150,0.3); }
+.theme-islami .prev-section { background: #111810; border-color: rgba(168,184,144,0.1); }
+
+.prev-section-label {
+  font-size: 0.48rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 400;
+  margin-bottom: 0.6rem;
+  display: block;
+}
+.theme-modern .prev-section-label { color: rgba(196,122,90,0.6); }
+.theme-botanical .prev-section-label { color: var(--sage); }
+.theme-islami .prev-section-label { color: rgba(168,184,144,0.6); }
+
+.prev-section-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  font-style: italic;
+  font-weight: 300;
+  margin-bottom: 0.5rem;
+}
+.theme-modern .prev-section-title { color: #E8DCC8; }
+.theme-botanical .prev-section-title { color: var(--bark); }
+.theme-islami .prev-section-title { color: #D8CEB8; }
+
+.prev-text {
+  font-size: 0.58rem;
+  line-height: 1.8;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 300;
+}
+.theme-modern .prev-text { color: rgba(168,136,112,0.8); }
+.theme-botanical .prev-text { color: var(--bark-soft); }
+.theme-islami .prev-text { color: rgba(128,142,112,0.8); }
+
+.prev-event-card {
+  border-radius: 8px;
+  padding: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+.theme-modern .prev-event-card { background: rgba(196,122,90,0.08); border: 1px solid rgba(196,122,90,0.15); }
+.theme-botanical .prev-event-card { background: rgba(124,155,133,0.08); border: 1px solid rgba(124,155,133,0.2); }
+.theme-islami .prev-event-card { background: rgba(168,184,144,0.08); border: 1px solid rgba(168,184,144,0.1); }
+
+/* watermark */
+.watermark {
+  padding: 0.8rem;
+  text-align: center;
+  font-size: 0.5rem;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  border-top: 1px solid;
+}
+.theme-modern .watermark { background: #0a0806; color: rgba(168,136,112,0.3); border-color: rgba(196,122,90,0.08); }
+.theme-botanical .watermark { background: #f0ebe0; color: rgba(154,123,101,0.4); border-color: rgba(212,184,150,0.2); }
+.theme-islami .watermark { background: #090d08; color: rgba(128,142,112,0.3); border-color: rgba(168,184,144,0.08); }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed;
+  bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--bark);
+  color: var(--cream);
+  padding: 0.7rem 1.5rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 300;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  html, body { overflow: auto; }
+  .editor-body { grid-template-columns: 1fr; }
+  .preview-panel { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="editor-topbar">
+  <div class="topbar-left">
+    <a href="dashboard.html" class="back-btn">← Dashboard</a>
+    <span class="editor-title">Editor Undangan</span>
+  </div>
+  <div class="topbar-center">
+    <div class="preview-toggle">
+      <button class="pt-btn active">📱 Preview</button>
+      <button class="pt-btn">🖥️ Desktop</button>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="save-indicator">
+      <div class="save-dot unsaved" id="save-dot"></div>
+      <span id="save-label">Belum disimpan</span>
+    </div>
+    <button class="btn-save" onclick="saveData()">Simpan</button>
+    <button class="btn-publish" onclick="publishInv()">Publikasi ✨</button>
+  </div>
+</div>
+
+<!-- EDITOR BODY -->
+<div class="editor-body">
+
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <!-- Steps Nav -->
+    <div class="steps-nav">
+      <button class="step-btn active" onclick="goStep(0, this)">🎨 Template</button>
+      <button class="step-btn" onclick="goStep(1, this)">👥 Mempelai</button>
+      <button class="step-btn" onclick="goStep(2, this)">📅 Acara</button>
+      <button class="step-btn" onclick="goStep(3, this)">📸 Foto</button>
+      <button class="step-btn" onclick="goStep(4, this)">🏦 Amplop</button>
+      <button class="step-btn" onclick="goStep(5, this)">⚙️ Pengaturan</button>
+    </div>
+
+    <!-- Step 0: Template -->
+    <div class="form-section active" id="step-0">
+      <div class="form-section-title">Pilih Template</div>
+      <div class="template-picker">
+        <div class="tpl-option selected" onclick="selectTemplate('modern', this)">
+          <div class="tpl-thumb modern">✦</div>
+          <div class="tpl-info">
+            <div class="tpl-name">Modern Elegance</div>
+            <div class="tpl-desc">Minimalis, gelap, berkelas</div>
+          </div>
+          <span class="tpl-badge free">Gratis</span>
+        </div>
+        <div class="tpl-option" onclick="selectTemplate('botanical', this)">
+          <div class="tpl-thumb botanical">🌿</div>
+          <div class="tpl-info">
+            <div class="tpl-name">Botanical Garden</div>
+            <div class="tpl-desc">Natural, hangat, earthy</div>
+          </div>
+          <span class="tpl-badge premium">Premium</span>
+        </div>
+        <div class="tpl-option" onclick="selectTemplate('islami', this)">
+          <div class="tpl-thumb islami">☪️</div>
+          <div class="tpl-info">
+            <div class="tpl-name">Islami Graceful</div>
+            <div class="tpl-desc">Sakral, bersih, bermakna</div>
+          </div>
+          <span class="tpl-badge premium">Premium</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 1: Mempelai -->
+    <div class="form-section" id="step-1">
+      <div class="form-section-title">Data Mempelai</div>
+
+      <div class="field-group">
+        <label class="field-label">Nama Mempelai Pria <span>*</span></label>
+        <input type="text" class="field-input" id="pria-nama" placeholder="Muhammad Rizky" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Nama Panggilan Pria</label>
+        <input type="text" class="field-input" id="pria-panggilan" placeholder="Rizky" oninput="updatePreview()">
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Nama Ayah</label>
+          <input type="text" class="field-input" id="pria-ayah" placeholder="Bpk. Ahmad" oninput="updatePreview()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Nama Ibu</label>
+          <input type="text" class="field-input" id="pria-ibu" placeholder="Ibu Sari" oninput="updatePreview()">
+        </div>
+      </div>
+
+      <div style="height:1px;background:var(--cream-dark);"></div>
+
+      <div class="field-group">
+        <label class="field-label">Nama Mempelai Wanita <span>*</span></label>
+        <input type="text" class="field-input" id="wanita-nama" placeholder="Aulia Rahma" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Nama Panggilan Wanita</label>
+        <input type="text" class="field-input" id="wanita-panggilan" placeholder="Aulia" oninput="updatePreview()">
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Nama Ayah</label>
+          <input type="text" class="field-input" id="wanita-ayah" placeholder="Bpk. Hendra" oninput="updatePreview()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Nama Ibu</label>
+          <input type="text" class="field-input" id="wanita-ibu" placeholder="Ibu Ratna" oninput="updatePreview()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Acara -->
+    <div class="form-section" id="step-2">
+      <div class="form-section-title">Detail Acara</div>
+
+      <div class="field-group">
+        <label class="field-label">Tanggal Akad <span>*</span></label>
+        <input type="date" class="field-input" id="akad-tanggal" oninput="updatePreview()">
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Waktu Mulai</label>
+          <input type="time" class="field-input" id="akad-mulai" value="08:00" oninput="updatePreview()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Waktu Selesai</label>
+          <input type="time" class="field-input" id="akad-selesai" value="10:00" oninput="updatePreview()">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Lokasi Akad <span>*</span></label>
+        <input type="text" class="field-input" id="akad-lokasi" placeholder="Masjid Al-Ikhlas" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Alamat Lengkap</label>
+        <textarea class="field-textarea" id="akad-alamat" placeholder="Jl. Sudirman No. 45, Jakarta Pusat" oninput="updatePreview()" style="min-height:56px;"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Link Google Maps</label>
+        <input type="url" class="field-input" id="akad-maps" placeholder="https://maps.google.com/...">
+        <span class="field-hint">Buka Google Maps → Share → Copy link</span>
+      </div>
+
+      <div style="height:1px;background:var(--cream-dark);"></div>
+
+      <div class="field-group">
+        <label class="field-label">Tanggal Resepsi</label>
+        <input type="date" class="field-input" id="resepsi-tanggal" oninput="updatePreview()">
+        <span class="field-hint">Kosongkan jika sama dengan tanggal akad</span>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label class="field-label">Waktu Mulai</label>
+          <input type="time" class="field-input" id="resepsi-mulai" value="11:00" oninput="updatePreview()">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Waktu Selesai</label>
+          <input type="time" class="field-input" id="resepsi-selesai" value="15:00" oninput="updatePreview()">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Lokasi Resepsi</label>
+        <input type="text" class="field-input" id="resepsi-lokasi" placeholder="Ballroom Shangri-La" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Alamat Lengkap</label>
+        <textarea class="field-textarea" id="resepsi-alamat" placeholder="Jl. Karet Semanggi, Jakarta Selatan" oninput="updatePreview()" style="min-height:56px;"></textarea>
+      </div>
+    </div>
+
+    <!-- Step 3: Foto -->
+    <div class="form-section" id="step-3">
+      <div class="form-section-title">Foto & Galeri</div>
+      <div class="field-group">
+        <label class="field-label">Foto Utama Pasangan</label>
+        <div class="img-upload">
+          <input type="file" accept="image/*" onchange="handleImg(this, 'main-photo')">
+          <div class="img-upload-icon">📸</div>
+          <div class="img-upload-label">Klik atau seret foto ke sini<br><span>Unggah foto</span> (maks. 5MB)</div>
+        </div>
+        <span class="field-hint">Disarankan foto landscape atau square, min. 800px</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Foto Galeri</label>
+        <div class="img-upload">
+          <input type="file" accept="image/*" multiple onchange="handleImgMulti(this)">
+          <div class="img-upload-icon">🖼️</div>
+          <div class="img-upload-label">Tambah foto galeri<br><span>Pilih beberapa foto</span> (maks. 6 foto)</div>
+        </div>
+      </div>
+      <div id="gallery-preview" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;"></div>
+    </div>
+
+    <!-- Step 4: Amplop -->
+    <div class="form-section" id="step-4">
+      <div class="form-section-title">Amplop Digital</div>
+      <div class="field-group">
+        <label class="field-label">Bank 1</label>
+        <select class="field-select" id="bank1" oninput="updatePreview()">
+          <option value="">Pilih Bank</option>
+          <option>BCA</option><option>Mandiri</option><option>BNI</option>
+          <option>BRI</option><option>BSI</option><option>DANA</option>
+          <option>OVO</option><option>GoPay</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Nomor Rekening / Dompet Digital</label>
+        <input type="text" class="field-input" id="rek1" placeholder="1234567890" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Atas Nama</label>
+        <input type="text" class="field-input" id="nama-rek1" placeholder="Muhammad Rizky" oninput="updatePreview()">
+      </div>
+
+      <div style="height:1px;background:var(--cream-dark);"></div>
+
+      <div class="field-group">
+        <label class="field-label">Bank 2 (opsional)</label>
+        <select class="field-select" id="bank2" oninput="updatePreview()">
+          <option value="">Pilih Bank</option>
+          <option>BCA</option><option>Mandiri</option><option>BNI</option>
+          <option>BRI</option><option>BSI</option><option>DANA</option>
+          <option>OVO</option><option>GoPay</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Nomor Rekening / Dompet Digital</label>
+        <input type="text" class="field-input" id="rek2" placeholder="0987654321" oninput="updatePreview()">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Atas Nama</label>
+        <input type="text" class="field-input" id="nama-rek2" placeholder="Aulia Rahma" oninput="updatePreview()">
+      </div>
+    </div>
+
+    <!-- Step 5: Pengaturan -->
+    <div class="form-section" id="step-5">
+      <div class="form-section-title">Pengaturan Undangan</div>
+      <div class="field-group">
+        <label class="field-label">URL Undangan <span>*</span></label>
+        <input type="text" class="field-input" id="url-slug" placeholder="rizky-aulia" oninput="updateSlug()">
+        <span class="field-hint" id="url-preview">sehidup.id/rizky-aulia</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Musik Latar (opsional)</label>
+        <select class="field-select" id="bgm">
+          <option value="">Tanpa musik</option>
+          <option>Canon in D — Pachelbel</option>
+          <option>A Thousand Years — Christina Perri</option>
+          <option>Perfect — Ed Sheeran</option>
+          <option>Thinking Out Loud — Ed Sheeran</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Pesan Pembuka</label>
+        <textarea class="field-textarea" id="pesan-pembuka" placeholder="Bismillahirrahmanirrahim..." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Kutipan / Ayat</label>
+        <textarea class="field-textarea" id="kutipan" placeholder="QS. Ar-Rum: 21..." oninput="updatePreview()"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Aktifkan Fitur</label>
+        <div style="display:flex;flex-direction:column;gap:0.5rem;">
+          <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.78rem;color:var(--bark-mid);cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:var(--terracotta);"> RSVP & Konfirmasi Kehadiran
+          </label>
+          <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.78rem;color:var(--bark-mid);cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:var(--terracotta);"> Buku Tamu / Ucapan
+          </label>
+          <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.78rem;color:var(--bark-mid);cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:var(--terracotta);"> Countdown Timer
+          </label>
+          <label style="display:flex;align-items:center;gap:0.6rem;font-size:0.78rem;color:var(--bark-mid);cursor:pointer;">
+            <input type="checkbox" style="accent-color:var(--terracotta);"> Live Streaming <span style="font-size:0.6rem;background:rgba(196,122,90,0.12);color:var(--terracotta);padding:0.15rem 0.4rem;border-radius:4px;margin-left:0.3rem;">Premium</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nav Bottom -->
+    <div class="form-nav">
+      <button class="fn-btn fn-prev" id="btn-prev" onclick="prevStep()" style="visibility:hidden;">← Kembali</button>
+      <span class="fn-progress" id="fn-progress">1 / 6</span>
+      <button class="fn-btn fn-next" id="btn-next" onclick="nextStep()">Lanjut →</button>
+    </div>
+  </div>
+
+  <!-- PREVIEW PANEL -->
+  <div class="preview-panel">
+    <div class="preview-label">Preview Undangan</div>
+
+    <div class="phone-frame">
+      <div class="phone-notch"><div class="phone-notch-inner"></div></div>
+      <div class="phone-screen" id="phone-screen">
+        <!-- dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient(
+    'https://bndcowyyahiythrunxve.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuZGNvd3l5YWhpeXRocnVueHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MDEyMDUsImV4cCI6MjA4OTI3NzIwNX0.UMUrdBI5M2H1FQKzQqM_CCqugmuEVKWfo0oF0DuYt4I'
+  )
+
+  // ── AUTH GUARD
+  let currentUser = null
+  let invitationId = null
+
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) { window.location.href = 'auth.html'; return; }
+    currentUser = session.user
+
+    // Load existing invitation if ?id= param exists
+    const params = new URLSearchParams(window.location.search)
+    const id = params.get('id')
+    if (id) {
+      invitationId = id
+      await loadInvitation(id)
+    }
+  }
+
+  async function loadInvitation(id) {
+    const { data, error } = await supabase
+      .from('invitations')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', currentUser.id)
+      .single()
+
+    if (error || !data) return
+
+    // Restore state
+    state.template = data.template || 'modern'
+    state.slug = data.slug || ''
+    Object.assign(state, data.data || {})
+
+    // Restore form values
+    const d = data.data || {}
+    setVal('pria-nama', d.pria?.nama)
+    setVal('pria-panggilan', d.pria?.panggilan)
+    setVal('pria-ayah', d.pria?.ayah)
+    setVal('pria-ibu', d.pria?.ibu)
+    setVal('wanita-nama', d.wanita?.nama)
+    setVal('wanita-panggilan', d.wanita?.panggilan)
+    setVal('wanita-ayah', d.wanita?.ayah)
+    setVal('wanita-ibu', d.wanita?.ibu)
+    setVal('akad-tanggal', d.akad?.tanggal)
+    setVal('akad-mulai', d.akad?.mulai)
+    setVal('akad-selesai', d.akad?.selesai)
+    setVal('akad-lokasi', d.akad?.lokasi)
+    setVal('akad-alamat', d.akad?.alamat)
+    setVal('resepsi-tanggal', d.resepsi?.tanggal)
+    setVal('resepsi-mulai', d.resepsi?.mulai)
+    setVal('resepsi-selesai', d.resepsi?.selesai)
+    setVal('resepsi-lokasi', d.resepsi?.lokasi)
+    setVal('resepsi-alamat', d.resepsi?.alamat)
+    setVal('bank1', d.amplop?.bank1)
+    setVal('rek1', d.amplop?.rek1)
+    setVal('nama-rek1', d.amplop?.nama1)
+    setVal('bank2', d.amplop?.bank2)
+    setVal('rek2', d.amplop?.rek2)
+    setVal('nama-rek2', d.amplop?.nama2)
+    setVal('url-slug', data.slug)
+    if (data.slug) document.getElementById('url-preview').textContent = 'sehidup.id/' + data.slug
+
+    // Restore template selection
+    document.querySelectorAll('.tpl-option').forEach(o => o.classList.remove('selected'))
+    const tplOpts = document.querySelectorAll('.tpl-option')
+    const tplMap = { modern: 0, botanical: 1, islami: 2 }
+    if (tplOpts[tplMap[state.template]]) tplOpts[tplMap[state.template]].classList.add('selected')
+
+    markSaved()
+    updatePreview()
+  }
+
+  function setVal(id, val) {
+    const el = document.getElementById(id)
+    if (el && val !== undefined && val !== null) el.value = val
+  }
+
+  // expose to window for onclick
+  window.goStep = goStep
+  window.nextStep = nextStep
+  window.prevStep = prevStep
+  window.selectTemplate = selectTemplate
+  window.updatePreview = updatePreview
+  window.updateSlug = updateSlug
+  window.handleImg = handleImg
+  window.handleImgMulti = handleImgMulti
+  window.saveData = saveData
+  window.publishInv = publishInv
+  // ── STATE
+  const state = {
+    template: 'modern',
+    pria: { nama: '', panggilan: '' },
+    wanita: { nama: '', panggilan: '' },
+    akad: { tanggal: '', mulai: '08:00', selesai: '10:00', lokasi: '', alamat: '' },
+    resepsi: { tanggal: '', mulai: '11:00', selesai: '15:00', lokasi: '', alamat: '' },
+    amplop: { bank1: '', rek1: '', nama1: '', bank2: '', rek2: '', nama2: '' },
+    slug: 'rizky-aulia',
+  };
+
+  let currentStep = 0;
+  const totalSteps = 6;
+
+  // ── STEP NAVIGATION
+  function goStep(n, btn) {
+    document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+    document.getElementById('step-' + n).classList.add('active');
+    document.querySelectorAll('.step-btn').forEach((b, i) => {
+      b.classList.remove('active');
+      if (i < n) b.classList.add('done');
+      else b.classList.remove('done');
+    });
+    if (btn) btn.classList.add('active');
+    currentStep = n;
+    updateNav();
+  }
+
+  function nextStep() {
+    if (currentStep < totalSteps - 1) goStep(currentStep + 1, document.querySelectorAll('.step-btn')[currentStep + 1]);
+  }
+
+  function prevStep() {
+    if (currentStep > 0) goStep(currentStep - 1, document.querySelectorAll('.step-btn')[currentStep - 1]);
+  }
+
+  function updateNav() {
+    const prev = document.getElementById('btn-prev');
+    const next = document.getElementById('btn-next');
+    prev.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+    next.textContent = currentStep === totalSteps - 1 ? 'Selesai ✓' : 'Lanjut →';
+    document.getElementById('fn-progress').textContent = (currentStep + 1) + ' / ' + totalSteps;
+    if (currentStep === totalSteps - 1) {
+      next.onclick = saveData;
+    } else {
+      next.onclick = nextStep;
+    }
+  }
+
+  // ── TEMPLATE SELECT
+  function selectTemplate(tpl, el) {
+    document.querySelectorAll('.tpl-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    state.template = tpl;
+    updatePreview();
+  }
+
+  // ── SLUG
+  function updateSlug() {
+    const val = document.getElementById('url-slug').value
+      .toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-');
+    document.getElementById('url-slug').value = val;
+    document.getElementById('url-preview').textContent = 'sehidup.id/' + (val || 'url-undangan');
+    state.slug = val;
+    markUnsaved();
+  }
+
+  // ── SAVE INDICATOR
+  function markUnsaved() {
+    document.getElementById('save-dot').classList.add('unsaved');
+    document.getElementById('save-label').textContent = 'Belum disimpan';
+  }
+  function markSaved() {
+    document.getElementById('save-dot').classList.remove('unsaved');
+    document.getElementById('save-label').textContent = 'Tersimpan';
+  }
+
+  // ── SAVE TO SUPABASE
+  async function saveData() {
+    collectState()
+    if (!currentUser) return
+
+    const slug = state.slug || generateSlug()
+    document.getElementById('url-slug').value = slug
+    document.getElementById('url-preview').textContent = 'sehidup.id/' + slug
+    state.slug = slug
+
+    const payload = {
+      user_id: currentUser.id,
+      slug,
+      template: state.template,
+      status: invitationId ? undefined : 'draft',
+      data: {
+        pria: state.pria,
+        wanita: state.wanita,
+        akad: state.akad,
+        resepsi: state.resepsi,
+        amplop: state.amplop,
+      }
+    }
+
+    if (invitationId) {
+      payload.id = invitationId
+      const { error } = await supabase.from('invitations').update(payload).eq('id', invitationId)
+      if (error) { showToast('Gagal menyimpan: ' + error.message); return; }
+    } else {
+      const { data, error } = await supabase.from('invitations').insert(payload).select().single()
+      if (error) { showToast('Gagal menyimpan: ' + error.message); return; }
+      invitationId = data.id
+      window.history.replaceState({}, '', '?id=' + invitationId)
+    }
+
+    markSaved()
+    showToast('Undangan berhasil disimpan! ✓')
+  }
+
+  // ── PUBLISH
+  async function publishInv() {
+    await saveData()
+    if (!invitationId) return
+    const { error } = await supabase
+      .from('invitations')
+      .update({ status: 'active' })
+      .eq('id', invitationId)
+    if (error) { showToast('Gagal publikasi: ' + error.message); return; }
+    showToast('Undangan dipublikasi! 🎉 sehidup.id/' + state.slug)
+  }
+
+  function generateSlug() {
+    const p = document.getElementById('pria-panggilan')?.value || document.getElementById('pria-nama')?.value || 'pria'
+    const w = document.getElementById('wanita-panggilan')?.value || document.getElementById('wanita-nama')?.value || 'wanita'
+    return (p + '-' + w).toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-')
+  }
+
+  // ── COLLECT STATE FROM INPUTS
+  function collectState() {
+    state.pria.nama = document.getElementById('pria-nama')?.value || '';
+    state.pria.panggilan = document.getElementById('pria-panggilan')?.value || '';
+    state.wanita.nama = document.getElementById('wanita-nama')?.value || '';
+    state.wanita.panggilan = document.getElementById('wanita-panggilan')?.value || '';
+    state.akad.tanggal = document.getElementById('akad-tanggal')?.value || '';
+    state.akad.mulai = document.getElementById('akad-mulai')?.value || '';
+    state.akad.selesai = document.getElementById('akad-selesai')?.value || '';
+    state.akad.lokasi = document.getElementById('akad-lokasi')?.value || '';
+    state.akad.alamat = document.getElementById('akad-alamat')?.value || '';
+    state.resepsi.lokasi = document.getElementById('resepsi-lokasi')?.value || '';
+    state.amplop.bank1 = document.getElementById('bank1')?.value || '';
+    state.amplop.rek1 = document.getElementById('rek1')?.value || '';
+    state.amplop.nama1 = document.getElementById('nama-rek1')?.value || '';
+  }
+
+  // ── FORMAT DATE
+  function formatDate(dateStr) {
+    if (!dateStr) return '—';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  // ── UPDATE PREVIEW
+  function updatePreview() {
+    collectState();
+    markUnsaved();
+    const t = state.template;
+    const priaNama = state.pria.panggilan || state.pria.nama || 'Nama Pria';
+    const wanitaNama = state.wanita.panggilan || state.wanita.nama || 'Nama Wanita';
+    const akadTgl = formatDate(state.akad.tanggal);
+
+    const ornaments = { modern: '✦', botanical: '❀', islami: '☪️' };
+    const orn = ornaments[t];
+
+    const screen = document.getElementById('phone-screen');
+    screen.innerHTML = `
+      <div class="theme-${t}">
+        <div class="inv-cover">
+          <div class="inv-cover-ornament">${orn}</div>
+          <div class="inv-cover-label">Undangan Pernikahan</div>
+          <div class="inv-cover-names">${priaNama}<em>&amp;</em>${wanitaNama}</div>
+          <div class="inv-cover-date">${akadTgl}</div>
+        </div>
+
+        <div class="prev-section">
+          <span class="prev-section-label">Mempelai</span>
+          <div class="prev-section-title">${state.pria.nama || 'Nama Lengkap Pria'}</div>
+          <div class="prev-text">& ${state.wanita.nama || 'Nama Lengkap Wanita'}</div>
+        </div>
+
+        <div class="prev-section">
+          <span class="prev-section-label">Akad Nikah</span>
+          <div class="prev-event-card">
+            <div class="prev-section-title" style="font-size:0.78rem;margin-bottom:0.3rem;">${state.akad.lokasi || 'Lokasi Akad'}</div>
+            <div class="prev-text">${akadTgl}<br>${state.akad.mulai} – ${state.akad.selesai} WIB</div>
+          </div>
+          ${state.resepsi.lokasi ? `
+          <div class="prev-event-card">
+            <div class="prev-section-title" style="font-size:0.78rem;margin-bottom:0.3rem;">${state.resepsi.lokasi}</div>
+            <div class="prev-text">${formatDate(state.resepsi.tanggal) || akadTgl}<br>${state.resepsi.mulai} – ${state.resepsi.selesai} WIB</div>
+          </div>` : ''}
+        </div>
+
+        ${state.amplop.bank1 ? `
+        <div class="prev-section">
+          <span class="prev-section-label">Amplop Digital</span>
+          <div class="prev-event-card">
+            <div class="prev-text">${state.amplop.bank1} · ${state.amplop.rek1 || '—'}<br>${state.amplop.nama1 || '—'}</div>
+          </div>
+        </div>` : ''}
+
+        <div class="watermark">Dibuat dengan sehidup.id</div>
+      </div>
+    `;
+  }
+
+  // ── IMAGE HANDLER
+  function handleImg(input, id) {
+    if (!input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      showToast('Foto berhasil diunggah ✓');
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  function handleImgMulti(input) {
+    const count = input.files.length;
+    showToast(count + ' foto ditambahkan ke galeri ✓');
+    const grid = document.getElementById('gallery-preview');
+    grid.innerHTML = '';
+    Array.from(input.files).slice(0, 6).forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const div = document.createElement('div');
+        div.style.cssText = 'aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--cream-dark);';
+        div.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+        grid.appendChild(div);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ── TOAST
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // ── AUTO-SAVE on input
+  let autoSaveTimer;
+  document.addEventListener('input', () => {
+    clearTimeout(autoSaveTimer);
+    markUnsaved();
+    autoSaveTimer = setTimeout(() => saveData(), 3000);
+  });
+
+  // ── INIT
+  updatePreview();
+  updateNav();
+  init()
+</script>
+</body>
+</html>

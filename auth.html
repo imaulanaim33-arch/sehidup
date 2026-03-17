@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Undangku — Masuk / Daftar</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Nunito:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FAF6F0;
+  --cream-dark: #F2EBE0;
+  --cream-deeper: #E8DDD0;
+  --bark: #3D2E1E;
+  --bark-mid: #6B5240;
+  --bark-soft: #9A7B65;
+  --terracotta: #C47A5A;
+  --terracotta-light: #D9967A;
+  --sage: #7C9B85;
+  --sand: #D4B896;
+  --sand-light: #EDE0CE;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { height: 100%; }
+
+body {
+  min-height: 100vh;
+  background: var(--cream);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 300;
+  color: var(--bark);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ── LEFT PANEL ── */
+.left-panel {
+  background: var(--bark);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 3rem;
+  min-height: 100vh;
+}
+
+/* organic blobs */
+.left-panel::before {
+  content: '';
+  position: absolute;
+  width: 500px; height: 500px;
+  background: radial-gradient(ellipse, rgba(196,122,90,0.25) 0%, transparent 65%);
+  top: -100px; right: -150px;
+  border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%;
+  animation: morphA 10s ease-in-out infinite;
+}
+.left-panel::after {
+  content: '';
+  position: absolute;
+  width: 350px; height: 350px;
+  background: radial-gradient(ellipse, rgba(124,155,133,0.2) 0%, transparent 65%);
+  bottom: -80px; left: -80px;
+  border-radius: 40% 60% 45% 55%;
+  animation: morphB 12s ease-in-out infinite;
+}
+
+@keyframes morphA {
+  0%,100% { border-radius: 60% 40% 55% 45% / 50% 60% 40% 50%; }
+  50% { border-radius: 40% 60% 45% 55% / 60% 40% 60% 40%; }
+}
+@keyframes morphB {
+  0%,100% { border-radius: 40% 60% 45% 55%; }
+  50% { border-radius: 60% 40% 55% 45%; }
+}
+
+.left-logo {
+  position: relative;
+  z-index: 2;
+  font-family: 'Lora', serif;
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--cream);
+  text-decoration: none;
+}
+.left-logo span { color: var(--terracotta-light); }
+
+.left-content {
+  position: relative;
+  z-index: 2;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.left-eyebrow {
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--terracotta-light);
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.left-title {
+  font-family: 'Lora', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--cream);
+  margin-bottom: 1.5rem;
+}
+.left-title em { font-style: italic; color: var(--terracotta-light); }
+
+.left-desc {
+  font-size: 0.85rem;
+  color: rgba(250,246,240,0.55);
+  line-height: 1.9;
+  max-width: 340px;
+  font-weight: 300;
+  margin-bottom: 3rem;
+}
+
+/* preview card stack */
+.preview-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  max-width: 320px;
+}
+
+.preview-item {
+  background: rgba(250,246,240,0.06);
+  border: 1px solid rgba(250,246,240,0.1);
+  border-radius: 16px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  backdrop-filter: blur(4px);
+  transition: background 0.3s ease;
+}
+.preview-item:hover { background: rgba(250,246,240,0.1); }
+
+.pi-icon {
+  width: 38px; height: 38px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.pi-icon.terra { background: rgba(196,122,90,0.25); }
+.pi-icon.sage { background: rgba(124,155,133,0.25); }
+.pi-icon.sand { background: rgba(212,184,150,0.25); }
+
+.pi-text {}
+.pi-label {
+  font-size: 0.78rem;
+  color: var(--cream);
+  font-weight: 400;
+  margin-bottom: 0.15rem;
+}
+.pi-sub {
+  font-size: 0.65rem;
+  color: rgba(250,246,240,0.4);
+  font-weight: 300;
+}
+
+.left-bottom {
+  position: relative;
+  z-index: 2;
+  font-size: 0.62rem;
+  color: rgba(250,246,240,0.25);
+  font-weight: 300;
+  letter-spacing: 0.05em;
+}
+
+/* ── RIGHT PANEL ── */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 5vw;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+.auth-box {
+  max-width: 400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.auth-tabs {
+  display: flex;
+  background: var(--cream-dark);
+  border-radius: 14px;
+  padding: 4px;
+  margin-bottom: 2.5rem;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 0.65rem;
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--bark-soft);
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  border: none;
+  background: transparent;
+  font-family: 'Nunito', sans-serif;
+  letter-spacing: 0.02em;
+}
+.auth-tab.active {
+  background: #fff;
+  color: var(--bark);
+  font-weight: 500;
+  box-shadow: 0 2px 12px rgba(61,46,30,0.08);
+}
+
+.auth-heading {
+  font-family: 'Lora', serif;
+  font-size: 1.7rem;
+  font-weight: 400;
+  color: var(--bark);
+  margin-bottom: 0.4rem;
+}
+.auth-heading em { font-style: italic; color: var(--terracotta); }
+
+.auth-sub {
+  font-size: 0.8rem;
+  color: var(--bark-soft);
+  font-weight: 300;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+/* ── FORM ── */
+.form-fields { display: flex; flex-direction: column; gap: 1.2rem; }
+
+.field-group { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.field-label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--bark-mid);
+  letter-spacing: 0.05em;
+}
+
+.field-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.field-icon {
+  position: absolute;
+  left: 1rem;
+  font-size: 0.9rem;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.field-input {
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 2.6rem;
+  background: #fff;
+  border: 1.5px solid var(--cream-deeper);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: var(--bark);
+  outline: none;
+  transition: all 0.25s ease;
+}
+.field-input::placeholder { color: var(--bark-soft); opacity: 0.5; }
+.field-input:focus {
+  border-color: var(--terracotta);
+  box-shadow: 0 0 0 3px rgba(196,122,90,0.1);
+}
+
+.field-toggle {
+  position: absolute;
+  right: 1rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+  user-select: none;
+}
+.field-toggle:hover { opacity: 0.7; }
+
+.field-hint {
+  font-size: 0.68rem;
+  color: var(--bark-soft);
+  font-weight: 300;
+}
+
+/* name row */
+.name-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+/* forgot */
+.forgot-link {
+  font-size: 0.72rem;
+  color: var(--terracotta);
+  text-decoration: none;
+  font-weight: 400;
+  text-align: right;
+  display: block;
+  margin-top: -0.5rem;
+  transition: opacity 0.2s;
+}
+.forgot-link:hover { opacity: 0.7; }
+
+/* submit */
+.submit-btn {
+  width: 100%;
+  padding: 0.95rem;
+  background: var(--terracotta);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 20px rgba(196,122,90,0.3);
+  position: relative;
+  overflow: hidden;
+}
+.submit-btn:hover {
+  background: var(--terracotta-light);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 28px rgba(196,122,90,0.35);
+}
+.submit-btn:active { transform: translateY(0); }
+.submit-btn.loading { pointer-events: none; }
+.submit-btn .btn-text { transition: opacity 0.2s; }
+.submit-btn.loading .btn-text { opacity: 0; }
+.btn-spinner {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.submit-btn.loading .btn-spinner { opacity: 1; }
+.spinner-ring {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+.auth-divider::before, .auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--cream-deeper);
+}
+.auth-divider span {
+  font-size: 0.68rem;
+  color: var(--bark-soft);
+  font-weight: 300;
+  white-space: nowrap;
+}
+
+/* google btn */
+.google-btn {
+  width: 100%;
+  padding: 0.85rem;
+  background: #fff;
+  border: 1.5px solid var(--cream-deeper);
+  border-radius: 12px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--bark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  transition: all 0.25s ease;
+}
+.google-btn:hover {
+  border-color: var(--sand);
+  box-shadow: 0 2px 12px rgba(61,46,30,0.06);
+}
+.google-icon { font-size: 1rem; }
+
+/* terms */
+.terms-text {
+  font-size: 0.68rem;
+  color: var(--bark-soft);
+  font-weight: 300;
+  line-height: 1.7;
+  text-align: center;
+  margin-top: 1.2rem;
+}
+.terms-text a { color: var(--terracotta); text-decoration: none; }
+.terms-text a:hover { text-decoration: underline; }
+
+/* switch */
+.switch-text {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--bark-soft);
+  font-weight: 300;
+  margin-top: 1.5rem;
+}
+.switch-text a {
+  color: var(--terracotta);
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+}
+.switch-text a:hover { text-decoration: underline; }
+
+/* ── SUCCESS STATE ── */
+.success-state {
+  display: none;
+  text-align: center;
+  padding: 2rem 0;
+  animation: fadeUp 0.5s ease forwards;
+}
+.success-state.show { display: block; }
+
+.success-icon {
+  width: 64px; height: 64px;
+  background: rgba(124,155,133,0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 1.5rem;
+}
+
+.success-title {
+  font-family: 'Lora', serif;
+  font-size: 1.4rem;
+  font-style: italic;
+  color: var(--bark);
+  margin-bottom: 0.5rem;
+}
+
+.success-sub {
+  font-size: 0.82rem;
+  color: var(--bark-soft);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+
+/* ── ERROR MESSAGE ── */
+.error-msg {
+  background: rgba(196,90,90,0.08);
+  border: 1px solid rgba(196,90,90,0.2);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  font-size: 0.75rem;
+  color: #B05050;
+  font-weight: 400;
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+}
+.error-msg.show { display: flex; }
+
+/* password strength */
+.strength-bar {
+  height: 3px;
+  background: var(--cream-deeper);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 0.4rem;
+}
+.strength-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background 0.3s ease;
+  width: 0%;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  body { grid-template-columns: 1fr; }
+  .left-panel { display: none; }
+  .right-panel { padding: 2rem 1.5rem; min-height: 100vh; justify-content: flex-start; padding-top: 4rem; }
+  .auth-box { max-width: 100%; }
+  .name-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <a href="landing-v2.html" class="left-logo">Undang<span>ku</span></a>
+
+  <div class="left-content">
+    <p class="left-eyebrow">Platform Undangan Digital</p>
+    <h2 class="left-title">Buat Undangan<br><em>yang Dikenang</em></h2>
+    <p class="left-desc">
+      Bergabung dan mulai buat undangan digital pernikahan yang indah, personal, dan mudah dibagikan.
+    </p>
+
+    <div class="preview-stack">
+      <div class="preview-item">
+        <div class="pi-icon terra">💌</div>
+        <div class="pi-text">
+          <div class="pi-label">Template Premium</div>
+          <div class="pi-sub">Modern, Botanical, Islami & lebih banyak</div>
+        </div>
+      </div>
+      <div class="preview-item">
+        <div class="pi-icon sage">✓</div>
+        <div class="pi-text">
+          <div class="pi-label">RSVP & Guestbook</div>
+          <div class="pi-sub">Kelola tamu dengan mudah & rapi</div>
+        </div>
+      </div>
+      <div class="preview-item">
+        <div class="pi-icon sand">🔗</div>
+        <div class="pi-text">
+          <div class="pi-label">Custom Domain</div>
+          <div class="pi-sub">Link personal yang berkesan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="left-bottom">© 2025 Undangku · Dibuat dengan 🤍 di Indonesia</div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="auth-box">
+
+    <!-- TABS -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">Masuk</button>
+      <button class="auth-tab" id="tab-register" onclick="switchTab('register')">Daftar</button>
+    </div>
+
+    <!-- ERROR -->
+    <div class="error-msg" id="error-msg">
+      <span>⚠️</span>
+      <span id="error-text">Terjadi kesalahan.</span>
+    </div>
+
+    <!-- ── LOGIN FORM ── -->
+    <div id="login-form">
+      <h2 class="auth-heading">Selamat <em>Datang</em></h2>
+      <p class="auth-sub">Masuk ke akun Undangku-mu dan kelola undanganmu.</p>
+
+      <div class="form-fields">
+        <div class="field-group">
+          <label class="field-label">Email</label>
+          <div class="field-wrap">
+            <span class="field-icon">✉️</span>
+            <input type="email" class="field-input" id="login-email" placeholder="nama@email.com">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Password</label>
+          <div class="field-wrap">
+            <span class="field-icon">🔒</span>
+            <input type="password" class="field-input" id="login-password" placeholder="Password kamu">
+            <span class="field-toggle" onclick="togglePass('login-password', this)">👁️</span>
+          </div>
+          <a href="#" class="forgot-link">Lupa password?</a>
+        </div>
+
+        <button class="submit-btn" onclick="handleLogin()">
+          <span class="btn-text">Masuk</span>
+          <div class="btn-spinner"><div class="spinner-ring"></div></div>
+        </button>
+      </div>
+
+      <div class="auth-divider"><span>atau masuk dengan</span></div>
+
+      <button class="google-btn" onclick="handleGoogle()">
+        <span class="google-icon">🌐</span>
+        Lanjutkan dengan Google
+      </button>
+
+      <p class="switch-text">
+        Belum punya akun? <a onclick="switchTab('register')">Daftar gratis</a>
+      </p>
+    </div>
+
+    <!-- ── REGISTER FORM ── -->
+    <div id="register-form" style="display:none;">
+      <h2 class="auth-heading">Mulai <em>Gratis</em></h2>
+      <p class="auth-sub">Buat akun dan langsung buat undangan pertamamu — tanpa kartu kredit.</p>
+
+      <div class="form-fields">
+        <div class="name-row">
+          <div class="field-group">
+            <label class="field-label">Nama Depan</label>
+            <div class="field-wrap">
+              <span class="field-icon">👤</span>
+              <input type="text" class="field-input" id="reg-firstname" placeholder="Rizky">
+            </div>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Nama Belakang</label>
+            <div class="field-wrap">
+              <input type="text" class="field-input" id="reg-lastname" placeholder="Aulia" style="padding-left:1rem;">
+            </div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Email</label>
+          <div class="field-wrap">
+            <span class="field-icon">✉️</span>
+            <input type="email" class="field-input" id="reg-email" placeholder="nama@email.com">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Password</label>
+          <div class="field-wrap">
+            <span class="field-icon">🔒</span>
+            <input type="password" class="field-input" id="reg-password" placeholder="Minimal 8 karakter" oninput="checkStrength(this.value)">
+            <span class="field-toggle" onclick="togglePass('reg-password', this)">👁️</span>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+          <span class="field-hint" id="strength-label"></span>
+        </div>
+
+        <button class="submit-btn" onclick="handleRegister()">
+          <span class="btn-text">Buat Akun Gratis</span>
+          <div class="btn-spinner"><div class="spinner-ring"></div></div>
+        </button>
+      </div>
+
+      <div class="auth-divider"><span>atau daftar dengan</span></div>
+
+      <button class="google-btn" onclick="handleGoogle()">
+        <span class="google-icon">🌐</span>
+        Lanjutkan dengan Google
+      </button>
+
+      <p class="terms-text">
+        Dengan mendaftar, kamu menyetujui <a href="#">Syarat & Ketentuan</a> dan <a href="#">Kebijakan Privasi</a> kami.
+      </p>
+
+      <p class="switch-text">
+        Sudah punya akun? <a onclick="switchTab('login')">Masuk di sini</a>
+      </p>
+    </div>
+
+    <!-- ── SUCCESS STATE ── -->
+    <div class="success-state" id="success-state">
+      <div class="success-icon">🎉</div>
+      <h3 class="success-title">Akun Berhasil Dibuat!</h3>
+      <p class="success-sub">
+        Selamat datang di Undangku.<br>
+        Cek email kamu untuk verifikasi, lalu mulai buat undangan pertamamu.
+      </p>
+      <button class="submit-btn" onclick="window.location.href='dashboard.html'" style="max-width:280px;margin:0 auto;display:block;">
+        <span class="btn-text">Ke Dashboard →</span>
+        <div class="btn-spinner"><div class="spinner-ring"></div></div>
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  // ── TAB SWITCH
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('tab-login').classList.toggle('active', isLogin);
+    document.getElementById('tab-register').classList.toggle('active', !isLogin);
+    document.getElementById('login-form').style.display = isLogin ? 'block' : 'none';
+    document.getElementById('register-form').style.display = isLogin ? 'none' : 'block';
+    document.getElementById('success-state').classList.remove('show');
+    hideError();
+  }
+
+  // ── TOGGLE PASSWORD VISIBILITY
+  function togglePass(id, el) {
+    const input = document.getElementById(id);
+    const isText = input.type === 'text';
+    input.type = isText ? 'password' : 'text';
+    el.textContent = isText ? '👁️' : '🙈';
+  }
+
+  // ── PASSWORD STRENGTH
+  function checkStrength(val) {
+    const fill = document.getElementById('strength-fill');
+    const label = document.getElementById('strength-label');
+    let score = 0;
+    if (val.length >= 8) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const levels = [
+      { w: '0%', color: 'transparent', text: '' },
+      { w: '25%', color: '#E08080', text: 'Lemah' },
+      { w: '50%', color: '#E0B060', text: 'Cukup' },
+      { w: '75%', color: '#80B090', text: 'Kuat' },
+      { w: '100%', color: '#5A9E70', text: 'Sangat Kuat' },
+    ];
+    const lvl = val.length === 0 ? levels[0] : levels[score] || levels[1];
+    fill.style.width = lvl.w;
+    fill.style.background = lvl.color;
+    label.textContent = lvl.text;
+    label.style.color = lvl.color;
+  }
+
+  // ── SHOW/HIDE ERROR
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    document.getElementById('error-text').textContent = msg;
+    el.classList.add('show');
+  }
+  function hideError() {
+    document.getElementById('error-msg').classList.remove('show');
+  }
+
+  // ── LOADING STATE
+  function setLoading(btn, state) {
+    btn.classList.toggle('loading', state);
+  }
+
+  // ── VALIDATE EMAIL
+  function isValidEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  // ── SUPABASE
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient(
+    'https://bndcowyyahiythrunxve.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuZGNvd3l5YWhpeXRocnVueHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MDEyMDUsImV4cCI6MjA4OTI3NzIwNX0.UMUrdBI5M2H1FQKzQqM_CCqugmuEVKWfo0oF0DuYt4I'
+  )
+
+  // Redirect ke dashboard jika sudah login
+  supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) window.location.href = 'dashboard.html'
+  })
+
+  // ── LOGIN HANDLER
+  async function handleLogin() {
+    hideError();
+    const email = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const btn = document.querySelector('#login-form .submit-btn');
+
+    if (!email || !isValidEmail(email)) return showError('Masukkan email yang valid.');
+    if (!password) return showError('Masukkan password kamu.');
+
+    setLoading(btn, true);
+
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      const msg = error.message.includes('Invalid') ? 'Email atau password salah.' : error.message;
+      showError(msg);
+      setLoading(btn, false);
+      return;
+    }
+    window.location.href = 'dashboard.html';
+  }
+
+  // ── REGISTER HANDLER
+  async function handleRegister() {
+    hideError();
+    const firstName = document.getElementById('reg-firstname').value.trim();
+    const lastName = document.getElementById('reg-lastname').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const password = document.getElementById('reg-password').value;
+    const btn = document.querySelector('#register-form .submit-btn');
+
+    if (!firstName) return showError('Masukkan nama depanmu.');
+    if (!email || !isValidEmail(email)) return showError('Masukkan email yang valid.');
+    if (password.length < 8) return showError('Password minimal 8 karakter.');
+
+    setLoading(btn, true);
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { first_name: firstName, last_name: lastName } }
+    });
+
+    if (error) {
+      const msg = error.message.includes('already') ? 'Email ini sudah terdaftar.' : error.message;
+      showError(msg);
+      setLoading(btn, false);
+      return;
+    }
+
+    setLoading(btn, false);
+    document.getElementById('register-form').style.display = 'none';
+    document.getElementById('success-state').classList.add('show');
+  }
+
+  // ── GOOGLE HANDLER
+  async function handleGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/dashboard.html' }
+    });
+    if (error) showError('Gagal login dengan Google. Coba lagi.');
+  }
+
+  // ── UTILITY
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  // ── ENTER KEY SUPPORT
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    const loginVisible = document.getElementById('login-form').style.display !== 'none';
+    if (loginVisible) handleLogin();
+    else handleRegister();
+  });
+</script>
+</body>
+</html>
