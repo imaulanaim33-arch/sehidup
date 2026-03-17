@@ -597,8 +597,8 @@ body {
   </div>
   <div class="topbar-center">
     <div class="preview-toggle">
-      <button class="pt-btn active">📱 Preview</button>
-      <button class="pt-btn">🖥️ Desktop</button>
+      <button class="pt-btn active" id="pt-mobile" onclick="setPreviewMode('mobile')">📱 Preview</button>
+      <button class="pt-btn" id="pt-desktop" onclick="setPreviewMode('desktop')">🖥️ Desktop</button>
     </div>
   </div>
   <div class="topbar-right">
@@ -1166,6 +1166,7 @@ body {
       <div class="theme-${t}">
         <div class="inv-cover">
           <div class="inv-cover-ornament">${orn}</div>
+          ${imgState.main ? `<img src="${imgState.main}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:0.8rem;border:2px solid rgba(196,122,90,0.3);">` : ''}
           <div class="inv-cover-label">Undangan Pernikahan</div>
           <div class="inv-cover-names">${priaNama}<em>&amp;</em>${wanitaNama}</div>
           <div class="inv-cover-date">${akadTgl}</div>
@@ -1204,30 +1205,69 @@ body {
   }
 
   // ── IMAGE HANDLER
-  function handleImg(input, id) {
+  // ── IMAGE STATE
+  const imgState = { main: null, gallery: [] }
+
+  window.handleImg = function(input, id) {
     if (!input.files[0]) return;
     const reader = new FileReader();
     reader.onload = e => {
+      imgState.main = e.target.result;
+      // Show thumbnail in upload area
+      const wrap = input.parentElement;
+      wrap.style.backgroundImage = `url(${e.target.result})`;
+      wrap.style.backgroundSize = 'cover';
+      wrap.style.backgroundPosition = 'center';
+      wrap.querySelector('.img-upload-icon').style.display = 'none';
+      wrap.querySelector('.img-upload-label').style.display = 'none';
+      updatePreview();
       showToast('Foto berhasil diunggah ✓');
     };
     reader.readAsDataURL(input.files[0]);
   }
 
-  function handleImgMulti(input) {
+  window.handleImgMulti = function(input) {
     const count = input.files.length;
+    imgState.gallery = [];
     showToast(count + ' foto ditambahkan ke galeri ✓');
     const grid = document.getElementById('gallery-preview');
     grid.innerHTML = '';
-    Array.from(input.files).slice(0, 6).forEach(file => {
+    Array.from(input.files).slice(0, 6).forEach((file, i) => {
       const reader = new FileReader();
       reader.onload = e => {
+        imgState.gallery[i] = e.target.result;
         const div = document.createElement('div');
         div.style.cssText = 'aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--cream-dark);';
         div.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
         grid.appendChild(div);
+        updatePreview();
       };
       reader.readAsDataURL(file);
     });
+  }
+
+  // ── PREVIEW MODE TOGGLE
+  window.setPreviewMode = function(mode) {
+    const phoneFrame = document.querySelector('.phone-frame');
+    const mobileBtn = document.getElementById('pt-mobile');
+    const desktopBtn = document.getElementById('pt-desktop');
+    if (mode === 'desktop') {
+      phoneFrame.style.width = '100%';
+      phoneFrame.style.borderRadius = '12px';
+      phoneFrame.style.boxShadow = '0 4px 24px rgba(61,46,30,0.15)';
+      document.querySelector('.phone-notch').style.display = 'none';
+      document.querySelector('.phone-screen').style.height = '560px';
+      mobileBtn.classList.remove('active');
+      desktopBtn.classList.add('active');
+    } else {
+      phoneFrame.style.width = '300px';
+      phoneFrame.style.borderRadius = '36px';
+      phoneFrame.style.boxShadow = '0 0 0 8px #E8DDD0, 0 0 0 10px #D4C4B0, 0 24px 60px rgba(61,46,30,0.2)';
+      document.querySelector('.phone-notch').style.display = 'flex';
+      document.querySelector('.phone-screen').style.height = '520px';
+      mobileBtn.classList.add('active');
+      desktopBtn.classList.remove('active');
+    }
   }
 
   // ── TOAST
