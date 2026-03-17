@@ -984,8 +984,8 @@ body {
   // ── STATE
   const state = {
     template: 'modern',
-    pria: { nama: '', panggilan: '' },
-    wanita: { nama: '', panggilan: '' },
+    pria: { nama: '', panggilan: '', ayah: '', ibu: '' },
+    wanita: { nama: '', panggilan: '', ayah: '', ibu: '' },
     akad: { tanggal: '', mulai: '08:00', selesai: '10:00', lokasi: '', alamat: '' },
     resepsi: { tanggal: '', mulai: '11:00', selesai: '15:00', lokasi: '', alamat: '' },
     amplop: { bank1: '', rek1: '', nama1: '', bank2: '', rek2: '', nama2: '' },
@@ -1119,8 +1119,12 @@ body {
   function collectState() {
     state.pria.nama = document.getElementById('pria-nama')?.value || '';
     state.pria.panggilan = document.getElementById('pria-panggilan')?.value || '';
+    state.pria.ayah = document.getElementById('pria-ayah')?.value || '';
+    state.pria.ibu = document.getElementById('pria-ibu')?.value || '';
     state.wanita.nama = document.getElementById('wanita-nama')?.value || '';
     state.wanita.panggilan = document.getElementById('wanita-panggilan')?.value || '';
+    state.wanita.ayah = document.getElementById('wanita-ayah')?.value || '';
+    state.wanita.ibu = document.getElementById('wanita-ibu')?.value || '';
     state.akad.tanggal = document.getElementById('akad-tanggal')?.value || '';
     state.akad.mulai = document.getElementById('akad-mulai')?.value || '';
     state.akad.selesai = document.getElementById('akad-selesai')?.value || '';
@@ -1164,8 +1168,17 @@ body {
 
         <div class="prev-section">
           <span class="prev-section-label">Mempelai</span>
-          <div class="prev-section-title">${state.pria.nama || 'Nama Lengkap Pria'}</div>
-          <div class="prev-text">& ${state.wanita.nama || 'Nama Lengkap Wanita'}</div>
+          <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0.5rem;align-items:center;margin-top:0.5rem;">
+            <div style="text-align:center;">
+              <div class="prev-section-title" style="font-size:0.85rem;margin-bottom:0.2rem;">${state.pria.nama || 'Nama Pria'}</div>
+              ${state.pria.ayah || state.pria.ibu ? `<div class="prev-text" style="font-size:0.55rem;">Putra dari<br>${state.pria.ayah || ''}${state.pria.ibu ? '<br>' + state.pria.ibu : ''}</div>` : ''}
+            </div>
+            <div class="prev-section-title" style="font-size:1rem;opacity:0.5;">&amp;</div>
+            <div style="text-align:center;">
+              <div class="prev-section-title" style="font-size:0.85rem;margin-bottom:0.2rem;">${state.wanita.nama || 'Nama Wanita'}</div>
+              ${state.wanita.ayah || state.wanita.ibu ? `<div class="prev-text" style="font-size:0.55rem;">Putri dari<br>${state.wanita.ayah || ''}${state.wanita.ibu ? '<br>' + state.wanita.ibu : ''}</div>` : ''}
+            </div>
+          </div>
         </div>
 
         <div class="prev-section">
