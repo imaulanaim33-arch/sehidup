@@ -899,9 +899,64 @@ body {
     }
 
     // Couple avatars - use real photos if available
-    if (d.photos?.main) {
-      document.getElementById('avatar-pria').innerHTML = `<img src="${d.photos.main}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
-      document.getElementById('avatar-wanita').innerHTML = `<img src="${d.photos.main}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+    if (d.photos?.pria) {
+      document.getElementById('avatar-pria').innerHTML = `<img src="${d.photos.pria}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+    }
+    if (d.photos?.wanita) {
+      document.getElementById('avatar-wanita').innerHTML = `<img src="${d.photos.wanita}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`
+    }
+
+    // Cover photo - use pria photo
+    if (d.photos?.pria) {
+      const photoEl = document.querySelector('#cover img')
+      if (!photoEl) {
+        const img = document.createElement('img')
+        img.src = d.photos.pria
+        img.style.cssText = 'width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid rgba(196,122,90,0.3);margin-bottom:0.5rem;'
+        document.getElementById('cover').insertBefore(img, document.getElementById('cv-names'))
+      }
+    }
+
+    // Music
+    if (d.bgm) {
+      const bgmMap = {
+        'Canon in D — Pachelbel': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        'A Thousand Years — Christina Perri': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        'Perfect — Ed Sheeran': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+        'Thinking Out Loud — Ed Sheeran': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+      }
+      const audio = document.createElement('audio')
+      audio.src = bgmMap[d.bgm] || ''
+      audio.loop = true
+      audio.volume = 0.3
+      document.body.appendChild(audio)
+      // Play after user opens invitation
+      window._bgmAudio = audio
+    }
+
+    // Love Story
+    if (d.loveStory?.length) {
+      const lsSection = document.createElement('section')
+      lsSection.className = 'inv-section reveal'
+      lsSection.style.background = 'var(--cream-dark)'
+      lsSection.innerHTML = `
+        <span class="inv-eyebrow">Perjalanan Cinta</span>
+        <h2 class="inv-title">Dari <em>Pertama Bertemu</em></h2>
+        <div class="inv-divider"><div class="inv-divider-dot"></div></div>
+        <div style="display:flex;flex-direction:column;gap:0;margin-top:2rem;max-width:500px;margin-left:auto;margin-right:auto;">
+          ${d.loveStory.map((item, i) => `
+            <div style="display:grid;grid-template-columns:60px 1fr;gap:1rem;padding-bottom:2rem;position:relative;">
+              <div style="text-align:center;">
+                <div style="width:40px;height:40px;border-radius:50%;background:rgba(196,122,90,0.12);border:2px solid rgba(196,122,90,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:0.65rem;font-weight:500;color:var(--terracotta);">${item.tahun || '—'}</div>
+                ${i < d.loveStory.length - 1 ? `<div style="width:2px;background:rgba(196,122,90,0.15);height:calc(100% - 40px);margin:4px auto 0;"></div>` : ''}
+              </div>
+              <div style="text-align:left;padding-top:0.5rem;">
+                <div style="font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:var(--bark);margin-bottom:0.4rem;">${item.judul || ''}</div>
+                <div style="font-size:0.8rem;color:var(--bark-soft);line-height:1.8;font-weight:300;">${item.cerita || ''}</div>
+              </div>
+            </div>`).join('')}
+        </div>`
+      document.querySelector('.rsvp-section').before(lsSection)
     }
 
     // Gallery
@@ -990,6 +1045,10 @@ body {
     document.getElementById('cover').classList.add('hidden')
     document.getElementById('main-content').classList.add('visible')
     initReveal()
+    // Play background music if available
+    if (window._bgmAudio) {
+      window._bgmAudio.play().catch(() => {})
+    }
   }
 
   function initReveal() {

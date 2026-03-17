@@ -765,13 +765,20 @@ body {
     <div class="form-section" id="step-3">
       <div class="form-section-title">Foto & Galeri</div>
       <div class="field-group">
-        <label class="field-label">Foto Utama Pasangan</label>
+        <label class="field-label">Foto Mempelai Pria</label>
         <div class="img-upload">
-          <input type="file" accept="image/*" onchange="handleImg(this, 'main-photo')">
-          <div class="img-upload-icon">📸</div>
-          <div class="img-upload-label">Klik atau seret foto ke sini<br><span>Unggah foto</span> (maks. 5MB)</div>
+          <input type="file" accept="image/*" onchange="handleImg(this, 'pria')">
+          <div class="img-upload-icon">🤵</div>
+          <div class="img-upload-label">Klik atau seret foto ke sini<br><span>Unggah foto pria</span></div>
         </div>
-        <span class="field-hint">Disarankan foto landscape atau square, min. 800px</span>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Foto Mempelai Wanita</label>
+        <div class="img-upload">
+          <input type="file" accept="image/*" onchange="handleImg(this, 'wanita')">
+          <div class="img-upload-icon">👰</div>
+          <div class="img-upload-label">Klik atau seret foto ke sini<br><span>Unggah foto wanita</span></div>
+        </div>
       </div>
       <div class="field-group">
         <label class="field-label">Foto Galeri</label>
@@ -782,6 +789,17 @@ body {
         </div>
       </div>
       <div id="gallery-preview" style="display:grid;grid-template-columns:repeat(3,1fr);gap:0.5rem;"></div>
+
+      <div style="height:1px;background:var(--cream-dark);margin-top:0.5rem;"></div>
+
+      <div class="form-section-title" style="font-size:0.9rem;margin-top:0.5rem;">Perjalanan Cinta 💕</div>
+      <p style="font-size:0.68rem;color:var(--bark-soft);font-weight:300;">Ceritakan momen-momen penting dari pertama bertemu hingga menikah.</p>
+
+      <div id="love-story-list" style="display:flex;flex-direction:column;gap:0.8rem;"></div>
+
+      <button type="button" onclick="addLoveStory()" style="padding:0.6rem;border:1.5px dashed var(--cream-deeper);border-radius:10px;background:transparent;font-family:'Nunito',sans-serif;font-size:0.75rem;color:var(--terracotta);cursor:pointer;width:100%;transition:all 0.2s;" onmouseover="this.style.borderColor='var(--terracotta)'" onmouseout="this.style.borderColor='var(--cream-deeper)'">
+        + Tambah Momen
+      </button>
     </div>
 
     <!-- Step 4: Amplop -->
@@ -973,6 +991,13 @@ body {
 
     markSaved()
     updatePreview()
+
+    // Restore love story
+    if (d.loveStory?.length) {
+      loveStory = []
+      document.getElementById('love-story-list').innerHTML = ''
+      d.loveStory.forEach(item => addLoveStory(item))
+    }
   }
 
   function setVal(id, val) {
@@ -1080,9 +1105,11 @@ body {
         resepsi: state.resepsi,
         amplop: state.amplop,
         photos: {
-          main: imgState.main || null,
+          pria: imgState.pria || null,
+          wanita: imgState.wanita || null,
           gallery: imgState.gallery || []
-        }
+        },
+        loveStory: loveStory.map(({tahun, judul, cerita}) => ({tahun, judul, cerita}))
       }
     }
 
@@ -1170,7 +1197,7 @@ body {
       <div class="theme-${t}">
         <div class="inv-cover">
           <div class="inv-cover-ornament">${orn}</div>
-          ${imgState.main ? `<img src="${imgState.main}" style="width:70px;height:70px;border-radius:50%;object-fit:cover;margin-bottom:0.8rem;border:2px solid rgba(196,122,90,0.3);">` : ''}
+          ${imgState.pria ? `<img src="${imgState.pria}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : ''}
           <div class="inv-cover-label">Undangan Pernikahan</div>
           <div class="inv-cover-names">${priaNama}<em>&amp;</em>${wanitaNama}</div>
           <div class="inv-cover-date">${akadTgl}</div>
@@ -1180,11 +1207,13 @@ body {
           <span class="prev-section-label">Mempelai</span>
           <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:0.5rem;align-items:center;margin-top:0.5rem;">
             <div style="text-align:center;">
+              ${imgState.pria ? `<img src="${imgState.pria}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;margin-bottom:0.4rem;border:1px solid rgba(196,122,90,0.3);">` : ''}
               <div class="prev-section-title" style="font-size:0.85rem;margin-bottom:0.2rem;">${state.pria.nama || 'Nama Pria'}</div>
               ${state.pria.ayah || state.pria.ibu ? `<div class="prev-text" style="font-size:0.55rem;">Putra dari<br>${state.pria.ayah || ''}${state.pria.ibu ? '<br>' + state.pria.ibu : ''}</div>` : ''}
             </div>
             <div class="prev-section-title" style="font-size:1rem;opacity:0.5;">&amp;</div>
             <div style="text-align:center;">
+              ${imgState.wanita ? `<img src="${imgState.wanita}" style="width:50px;height:50px;border-radius:50%;object-fit:cover;margin-bottom:0.4rem;border:1px solid rgba(196,122,90,0.3);">` : ''}
               <div class="prev-section-title" style="font-size:0.85rem;margin-bottom:0.2rem;">${state.wanita.nama || 'Nama Wanita'}</div>
               ${state.wanita.ayah || state.wanita.ibu ? `<div class="prev-text" style="font-size:0.55rem;">Putri dari<br>${state.wanita.ayah || ''}${state.wanita.ibu ? '<br>' + state.wanita.ibu : ''}</div>` : ''}
             </div>
@@ -1225,15 +1254,45 @@ body {
     `;
   }
 
-  // ── IMAGE HANDLER
   // ── IMAGE STATE
-  const imgState = { main: null, gallery: [] }
+  const imgState = { pria: null, wanita: null, gallery: [] }
+  let loveStory = []
 
-  window.handleImg = async function(input, id) {
+  window.addLoveStory = function(item = {}) {
+    const id = Date.now()
+    loveStory.push({ id, tahun: item.tahun || '', judul: item.judul || '', cerita: item.cerita || '' })
+    const list = document.getElementById('love-story-list')
+    const div = document.createElement('div')
+    div.id = `ls-${id}`
+    div.style.cssText = 'background:var(--cream);border-radius:10px;padding:0.8rem;display:flex;flex-direction:column;gap:0.5rem;'
+    div.innerHTML = `
+      <div style="display:grid;grid-template-columns:80px 1fr;gap:0.5rem;">
+        <input type="text" placeholder="Tahun" value="${item.tahun||''}" oninput="updateLS(${id},'tahun',this.value)" style="padding:0.5rem 0.7rem;border:1.5px solid var(--cream-deeper);border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.78rem;outline:none;background:#fff;color:var(--bark);">
+        <input type="text" placeholder="Judul momen (mis. Pertama Bertemu)" value="${item.judul||''}" oninput="updateLS(${id},'judul',this.value)" style="padding:0.5rem 0.7rem;border:1.5px solid var(--cream-deeper);border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.78rem;outline:none;background:#fff;color:var(--bark);">
+      </div>
+      <textarea placeholder="Ceritakan momennya..." oninput="updateLS(${id},'cerita',this.value)" style="padding:0.5rem 0.7rem;border:1.5px solid var(--cream-deeper);border-radius:8px;font-family:'Nunito',sans-serif;font-size:0.78rem;outline:none;background:#fff;color:var(--bark);resize:none;min-height:56px;">${item.cerita||''}</textarea>
+      <button onclick="removeLS(${id})" style="align-self:flex-end;font-size:0.65rem;color:var(--bark-soft);background:none;border:none;cursor:pointer;font-family:'Nunito',sans-serif;">✕ Hapus</button>
+    `
+    list.appendChild(div)
+    updatePreview()
+  }
+
+  window.updateLS = function(id, field, val) {
+    const item = loveStory.find(l => l.id === id)
+    if (item) { item[field] = val; updatePreview() }
+  }
+
+  window.removeLS = function(id) {
+    loveStory = loveStory.filter(l => l.id !== id)
+    document.getElementById(`ls-${id}`)?.remove()
+    updatePreview()
+  }
+
+  window.handleImg = async function(input, target) {
     if (!input.files[0]) return;
     const file = input.files[0];
     const ext = file.name.split('.').pop();
-    const path = `${currentUser.id}/main-${Date.now()}.${ext}`;
+    const path = `${currentUser.id}/${target}-${Date.now()}.${ext}`;
 
     showToast('Mengupload foto...');
 
@@ -1247,15 +1306,17 @@ body {
       .from('wedding-photos')
       .getPublicUrl(path);
 
-    imgState.main = publicUrl;
+    imgState[target] = publicUrl;
 
     // Show thumbnail in upload area
     const wrap = input.parentElement;
     wrap.style.backgroundImage = `url(${publicUrl})`;
     wrap.style.backgroundSize = 'cover';
     wrap.style.backgroundPosition = 'center';
-    wrap.querySelector('.img-upload-icon').style.display = 'none';
-    wrap.querySelector('.img-upload-label').style.display = 'none';
+    const icon = wrap.querySelector('.img-upload-icon');
+    const label = wrap.querySelector('.img-upload-label');
+    if (icon) icon.style.display = 'none';
+    if (label) label.style.display = 'none';
 
     updatePreview();
     showToast('Foto berhasil diunggah ✓');
