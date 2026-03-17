@@ -920,18 +920,20 @@ body {
     // Music
     if (d.bgm) {
       const bgmMap = {
-        'Canon in D — Pachelbel': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
-        'A Thousand Years — Christina Perri': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
-        'Perfect — Ed Sheeran': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-        'Thinking Out Loud — Ed Sheeran': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+        'Canon in D — Pachelbel': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/Johann_Pachelbel_-_Canon_in_D_major.ogg',
+        'A Thousand Years — Christina Perri': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
+        'Perfect — Ed Sheeran': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+        'Thinking Out Loud — Ed Sheeran': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
       }
-      const audio = document.createElement('audio')
-      audio.src = bgmMap[d.bgm] || ''
-      audio.loop = true
-      audio.volume = 0.3
-      document.body.appendChild(audio)
-      // Play after user opens invitation
-      window._bgmAudio = audio
+      const src = bgmMap[d.bgm]
+      if (src) {
+        const audio = document.createElement('audio')
+        audio.src = src
+        audio.loop = true
+        audio.volume = 0.3
+        document.body.appendChild(audio)
+        window._bgmAudio = audio
+      }
     }
 
     // Love Story

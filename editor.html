@@ -982,6 +982,9 @@ body {
     setVal('nama-rek2', d.amplop?.nama2)
     setVal('url-slug', data.slug)
     if (data.slug) document.getElementById('url-preview').textContent = 'sehidup.vercel.app/' + data.slug
+    setVal('bgm', d.bgm)
+    setVal('pesan-pembuka', d.pesanPembuka)
+    setVal('kutipan', d.kutipan)
 
     // Restore template selection
     document.querySelectorAll('.tpl-option').forEach(o => o.classList.remove('selected'))
@@ -1104,6 +1107,9 @@ body {
         akad: state.akad,
         resepsi: state.resepsi,
         amplop: state.amplop,
+        bgm: state.bgm || '',
+        pesanPembuka: state.pesanPembuka || '',
+        kutipan: state.kutipan || '',
         photos: {
           pria: imgState.pria || null,
           wanita: imgState.wanita || null,
@@ -1171,6 +1177,12 @@ body {
     state.amplop.bank1 = document.getElementById('bank1')?.value || '';
     state.amplop.rek1 = document.getElementById('rek1')?.value || '';
     state.amplop.nama1 = document.getElementById('nama-rek1')?.value || '';
+    state.amplop.bank2 = document.getElementById('bank2')?.value || '';
+    state.amplop.rek2 = document.getElementById('rek2')?.value || '';
+    state.amplop.nama2 = document.getElementById('nama-rek2')?.value || '';
+    state.bgm = document.getElementById('bgm')?.value || '';
+    state.pesanPembuka = document.getElementById('pesan-pembuka')?.value || '';
+    state.kutipan = document.getElementById('kutipan')?.value || '';
   }
 
   // ── FORMAT DATE
@@ -1197,7 +1209,7 @@ body {
       <div class="theme-${t}">
         <div class="inv-cover">
           <div class="inv-cover-ornament">${orn}</div>
-          ${imgState.pria ? `<img src="${imgState.pria}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : ''}
+          ${imgState.pria ? `<img src="${imgState.pria}" style="width:70px;height:70px;object-fit:cover;border-radius:50%;margin-bottom:0.5rem;border:2px solid rgba(196,122,90,0.25);">` : ''}
           <div class="inv-cover-label">Undangan Pernikahan</div>
           <div class="inv-cover-names">${priaNama}<em>&amp;</em>${wanitaNama}</div>
           <div class="inv-cover-date">${akadTgl}</div>
@@ -1224,14 +1236,27 @@ body {
           <span class="prev-section-label">Akad Nikah</span>
           <div class="prev-event-card">
             <div class="prev-section-title" style="font-size:0.78rem;margin-bottom:0.3rem;">${state.akad.lokasi || 'Lokasi Akad'}</div>
-            <div class="prev-text">${akadTgl}<br>${state.akad.mulai} – ${state.akad.selesai} WIB</div>
+            <div class="prev-text">${akadTgl}<br>${state.akad.mulai} – ${state.akad.selesai} WIB${state.akad.alamat ? '<br>' + state.akad.alamat : ''}${state.akad.maps ? '<br><span style="color:rgba(196,122,90,0.7);font-size:0.5rem;">📍 Lihat Peta</span>' : ''}</div>
           </div>
           ${state.resepsi.lokasi ? `
           <div class="prev-event-card">
             <div class="prev-section-title" style="font-size:0.78rem;margin-bottom:0.3rem;">${state.resepsi.lokasi}</div>
-            <div class="prev-text">${formatDate(state.resepsi.tanggal) || akadTgl}<br>${state.resepsi.mulai} – ${state.resepsi.selesai} WIB</div>
+            <div class="prev-text">${formatDate(state.resepsi.tanggal) || akadTgl}<br>${state.resepsi.mulai} – ${state.resepsi.selesai} WIB${state.resepsi.alamat ? '<br>' + state.resepsi.alamat : ''}${state.resepsi.maps ? '<br><span style="color:rgba(196,122,90,0.7);font-size:0.5rem;">📍 Lihat Peta</span>' : ''}</div>
           </div>` : ''}
         </div>
+
+        ${loveStory.length > 0 ? `
+        <div class="prev-section">
+          <span class="prev-section-label">Perjalanan Cinta</span>
+          ${loveStory.map(item => `
+            <div style="display:flex;gap:0.5rem;margin-bottom:0.5rem;align-items:flex-start;">
+              <div style="font-size:0.48rem;color:rgba(196,122,90,0.7);font-weight:500;white-space:nowrap;padding-top:0.1rem;">${item.tahun}</div>
+              <div>
+                <div class="prev-section-title" style="font-size:0.65rem;">${item.judul}</div>
+                <div class="prev-text" style="font-size:0.5rem;">${item.cerita}</div>
+              </div>
+            </div>`).join('')}
+        </div>` : ''}
 
         ${imgState.gallery.length > 0 ? `
         <div class="prev-section">
