@@ -909,7 +909,7 @@ body {
 
   async function init() {
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { window.location.href = 'auth.html'; return; }
+    if (!session) { window.location.href = '/masuk'; return; }
     currentUser = session.user
 
     // Load existing invitation if ?id= param exists

@@ -923,7 +923,7 @@ body {
 
   async function init() {
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) { window.location.href = 'auth.html'; return; }
+    if (!session) { window.location.href = '/masuk'; return; }
     currentUser = session.user
 
     // Load profile
@@ -1068,19 +1068,19 @@ body {
   // ── LOGOUT
   document.querySelector('.user-logout').addEventListener('click', async () => {
     await supabase.auth.signOut()
-    window.location.href = 'auth.html'
+    window.location.href = '/masuk'
   })
 
   init()
 
-  function setPage(page) {
+  window.setPage = function(page) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     event.currentTarget.classList.add('active');
     if (page === 'new') openNew();
   }
 
   // ── FILTER
-  function setFilter(btn, filter) {
+  window.setFilter = function(btn, filter) {
     document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     const cards = document.querySelectorAll('.inv-card');
@@ -1094,43 +1094,43 @@ body {
 
   // ── SHARE MODAL
   let currentUrl = '';
-  function openShare(url) {
+  window.openShare = function(url) {
     currentUrl = url;
     document.getElementById('share-url-text').textContent = 'https://' + url;
     document.getElementById('share-modal').classList.add('show');
   }
-  function closeShareModal() {
+  window.closeShareModal = function() {
     document.getElementById('share-modal').classList.remove('show');
   }
-  function closeModal(e) {
+  window.closeModal = function(e) {
     if (e.target === document.getElementById('share-modal')) closeShareModal();
   }
-  function copyShareUrl() {
+  window.copyShareUrl = function() {
     navigator.clipboard.writeText('https://' + currentUrl).catch(() => {});
     showToast('Link berhasil disalin! 🔗');
     closeShareModal();
   }
-  function shareWA() {
+  window.shareWA = function() {
     const msg = encodeURIComponent('Halo! Kami mengundang kamu ke pernikahan kami 💌\nhttps://' + currentUrl);
     window.open('https://wa.me/?text=' + msg, '_blank');
   }
-  function shareIG() {
+  window.shareIG = function() {
     copyShareUrl();
     showToast('Link disalin! Tempel di bio Instagram kamu 📸');
   }
 
   // ── UPGRADE
-  function openUpgrade() {
+  window.openUpgrade = function() {
     showToast('Fitur upgrade akan segera tersedia ⭐');
   }
 
   // ── NEW INVITATION
-  function openNew() {
-    window.location.href = 'editor.html';
+  window.openNew = function() {
+    window.location.href = '/editor';
   }
 
   // ── TOAST
-  function showToast(msg) {
+  window.showToast = function(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');

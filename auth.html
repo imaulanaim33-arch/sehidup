@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Undangku — Masuk / Daftar</title>
+<title>Sehidup — Masuk / Daftar</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Nunito:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -528,7 +528,7 @@ body {
 
 <!-- LEFT PANEL -->
 <div class="left-panel">
-  <a href="landing-v2.html" class="left-logo">Undang<span>ku</span></a>
+  <a href="landing-v2.html" class="left-logo">Sehi<span>dup</span></a>
 
   <div class="left-content">
     <p class="left-eyebrow">Platform Undangan Digital</p>
@@ -562,7 +562,7 @@ body {
     </div>
   </div>
 
-  <div class="left-bottom">© 2025 Undangku · Dibuat dengan 🤍 di Indonesia</div>
+  <div class="left-bottom">© 2025 Sehidup · Dibuat dengan 🤍 di Indonesia</div>
 </div>
 
 <!-- RIGHT PANEL -->
@@ -584,7 +584,7 @@ body {
     <!-- ── LOGIN FORM ── -->
     <div id="login-form">
       <h2 class="auth-heading">Selamat <em>Datang</em></h2>
-      <p class="auth-sub">Masuk ke akun Undangku-mu dan kelola undanganmu.</p>
+      <p class="auth-sub">Masuk ke akun Sehidup-mu dan kelola undanganmu.</p>
 
       <div class="form-fields">
         <div class="field-group">
@@ -691,7 +691,7 @@ body {
       <div class="success-icon">🎉</div>
       <h3 class="success-title">Akun Berhasil Dibuat!</h3>
       <p class="success-sub">
-        Selamat datang di Undangku.<br>
+        Selamat datang di Sehidup.<br>
         Cek email kamu untuk verifikasi, lalu mulai buat undangan pertamamu.
       </p>
       <button class="submit-btn" onclick="window.location.href='dashboard.html'" style="max-width:280px;margin:0 auto;display:block;">
@@ -705,7 +705,7 @@ body {
 
 <script type="module">
   // ── TAB SWITCH
-  function switchTab(tab) {
+  window.switchTab = function(tab) {
     const isLogin = tab === 'login';
     document.getElementById('tab-login').classList.toggle('active', isLogin);
     document.getElementById('tab-register').classList.toggle('active', !isLogin);
@@ -716,7 +716,7 @@ body {
   }
 
   // ── TOGGLE PASSWORD VISIBILITY
-  function togglePass(id, el) {
+  window.togglePass = function(id, el) {
     const input = document.getElementById(id);
     const isText = input.type === 'text';
     input.type = isText ? 'password' : 'text';
@@ -724,7 +724,7 @@ body {
   }
 
   // ── PASSWORD STRENGTH
-  function checkStrength(val) {
+  window.checkStrength = function(val) {
     const fill = document.getElementById('strength-fill');
     const label = document.getElementById('strength-label');
     let score = 0;
@@ -776,11 +776,11 @@ body {
 
   // Redirect ke dashboard jika sudah login
   supabase.auth.getSession().then(({ data: { session } }) => {
-    if (session) window.location.href = 'dashboard.html'
+    if (session) window.location.href = '/dashboard'
   })
 
   // ── LOGIN HANDLER
-  async function handleLogin() {
+  window.handleLogin = async function() {
     hideError();
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
@@ -798,11 +798,11 @@ body {
       setLoading(btn, false);
       return;
     }
-    window.location.href = 'dashboard.html';
+    window.location.href = '/dashboard';
   }
 
   // ── REGISTER HANDLER
-  async function handleRegister() {
+  window.handleRegister = async function() {
     hideError();
     const firstName = document.getElementById('reg-firstname').value.trim();
     const lastName = document.getElementById('reg-lastname').value.trim();
@@ -835,7 +835,7 @@ body {
   }
 
   // ── GOOGLE HANDLER
-  async function handleGoogle() {
+  window.handleGoogle = async function() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + '/dashboard.html' }
