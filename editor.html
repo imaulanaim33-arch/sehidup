@@ -987,7 +987,7 @@ body {
     pria: { nama: '', panggilan: '', ayah: '', ibu: '' },
     wanita: { nama: '', panggilan: '', ayah: '', ibu: '' },
     akad: { tanggal: '', mulai: '08:00', selesai: '10:00', lokasi: '', alamat: '' },
-    resepsi: { tanggal: '', mulai: '11:00', selesai: '15:00', lokasi: '', alamat: '' },
+    resepsi: { tanggal: '', mulai: '11:00', selesai: '15:00', lokasi: '', alamat: '', maps: '' },
     amplop: { bank1: '', rek1: '', nama1: '', bank2: '', rek2: '', nama2: '' },
     slug: 'rizky-aulia',
   };
@@ -1134,7 +1134,13 @@ body {
     state.akad.selesai = document.getElementById('akad-selesai')?.value || '';
     state.akad.lokasi = document.getElementById('akad-lokasi')?.value || '';
     state.akad.alamat = document.getElementById('akad-alamat')?.value || '';
+    state.akad.maps = document.getElementById('akad-maps')?.value || '';
+    state.resepsi.tanggal = document.getElementById('resepsi-tanggal')?.value || '';
+    state.resepsi.mulai = document.getElementById('resepsi-mulai')?.value || '';
+    state.resepsi.selesai = document.getElementById('resepsi-selesai')?.value || '';
     state.resepsi.lokasi = document.getElementById('resepsi-lokasi')?.value || '';
+    state.resepsi.alamat = document.getElementById('resepsi-alamat')?.value || '';
+    state.resepsi.maps = document.getElementById('resepsi-maps')?.value || '';
     state.amplop.bank1 = document.getElementById('bank1')?.value || '';
     state.amplop.rek1 = document.getElementById('rek1')?.value || '';
     state.amplop.nama1 = document.getElementById('nama-rek1')?.value || '';
