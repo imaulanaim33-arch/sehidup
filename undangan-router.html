@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Membuka Undangan...</title>
+<style>
+  body {
+    margin: 0; min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Georgia', serif;
+    background: #FAF6F0;
+    color: #6B5240;
+  }
+  .loading { text-align: center; }
+  .loading-icon { font-size: 2rem; animation: pulse 1.5s ease-in-out infinite; display: block; margin-bottom: 1rem; }
+  @keyframes pulse { 0%,100% { transform: scale(1); opacity: 0.6; } 50% { transform: scale(1.15); opacity: 1; } }
+  .loading-text { font-size: 0.9rem; font-style: italic; opacity: 0.6; }
+</style>
+</head>
+<body>
+<div class="loading">
+  <span class="loading-icon">💌</span>
+  <div class="loading-text">Membuka undangan...</div>
+</div>
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient(
+    'https://bndcowyyahiythrunxve.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuZGNvd3l5YWhpeXRocnVueHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MDEyMDUsImV4cCI6MjA4OTI3NzIwNX0.UMUrdBI5M2H1FQKzQqM_CCqugmuEVKWfo0oF0DuYt4I'
+  )
+
+  // Template → file mapping
+  const templateFiles = {
+    'modern':   '/undangan.html',
+    'botanical': '/undangan.html',   // akan diganti saat template botanical jadi
+    'islami':   '/undangan.html',    // akan diganti saat template islami jadi
+    'jawa':     '/undangan.html',    // akan diganti saat template jawa jadi
+    'pastel':   '/undangan-pastel.html',
+  }
+
+  const slug = window.location.pathname.replace('/', '')
+
+  if (!slug) {
+    window.location.href = '/'
+  } else {
+    const { data, error } = await supabase
+      .from('invitations')
+      .select('template')
+      .eq('slug', slug)
+      .eq('status', 'active')
+      .single()
+
+    if (error || !data) {
+      // Tidak ditemukan — coba modern sebagai fallback
+      window.location.href = `/undangan.html?slug=${slug}`
+    } else {
+      const file = templateFiles[data.template] || '/undangan.html'
+      window.location.href = `${file}?slug=${slug}`
+    }
+  }
+</script>
+</body>
+</html>

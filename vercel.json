@@ -5,6 +5,6 @@
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/editor", "destination": "/editor.html" },
     { "source": "/editor/:id", "destination": "/editor.html" },
-    { "source": "/:slug", "destination": "/undangan.html" }
+    { "source": "/:slug", "destination": "/undangan-router.html" }
   ]
 }
