@@ -1057,14 +1057,6 @@ body {
     }
   }
 
-  // ── NAV
-  // expose to window for onclick handlers
-  window.openShare = openShare
-  window.openUpgrade = openUpgrade
-  window.openNew = openNew
-  window.setFilter = setFilter
-  window.setPage = setPage
-
   // ── LOGOUT
   document.querySelector('.user-logout').addEventListener('click', async () => {
     await supabase.auth.signOut()
@@ -1103,25 +1095,25 @@ body {
     document.getElementById('share-modal').classList.remove('show');
   }
   window.closeModal = function(e) {
-    if (e.target === document.getElementById('share-modal')) closeShareModal();
+    if (e.target === document.getElementById('share-modal')) window.closeShareModal();
   }
   window.copyShareUrl = function() {
     navigator.clipboard.writeText('https://' + currentUrl).catch(() => {});
-    showToast('Link berhasil disalin! 🔗');
-    closeShareModal();
+    window.showToast('Link berhasil disalin! 🔗');
+    window.closeShareModal();
   }
   window.shareWA = function() {
     const msg = encodeURIComponent('Halo! Kami mengundang kamu ke pernikahan kami 💌\nhttps://' + currentUrl);
     window.open('https://wa.me/?text=' + msg, '_blank');
   }
   window.shareIG = function() {
-    copyShareUrl();
-    showToast('Link disalin! Tempel di bio Instagram kamu 📸');
+    window.copyShareUrl();
+    window.showToast('Link disalin! Tempel di bio Instagram kamu 📸');
   }
 
   // ── UPGRADE
   window.openUpgrade = function() {
-    showToast('Fitur upgrade akan segera tersedia ⭐');
+    window.showToast('Fitur upgrade akan segera tersedia ⭐');
   }
 
   // ── NEW INVITATION
