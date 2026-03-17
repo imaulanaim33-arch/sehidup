@@ -1181,6 +1181,14 @@ body {
           </div>` : ''}
         </div>
 
+        ${imgState.gallery.length > 0 ? `
+        <div class="prev-section">
+          <span class="prev-section-label">Galeri</span>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:0.5rem;">
+            ${imgState.gallery.map(src => `<img src="${src}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:4px;">`).join('')}
+          </div>
+        </div>` : ''}
+
         ${state.amplop.bank1 ? `
         <div class="prev-section">
           <span class="prev-section-label">Amplop Digital</span>
@@ -1217,23 +1225,37 @@ body {
   }
 
   window.handleImgMulti = function(input) {
-    const count = input.files.length;
-    imgState.gallery = [];
-    showToast(count + ' foto ditambahkan ke galeri ✓');
+    const files = Array.from(input.files).slice(0, 6 - imgState.gallery.length);
+    if (!files.length) { showToast('Maksimal 6 foto galeri'); return; }
+    showToast(files.length + ' foto ditambahkan ke galeri ✓');
     const grid = document.getElementById('gallery-preview');
-    grid.innerHTML = '';
-    Array.from(input.files).slice(0, 6).forEach((file, i) => {
+    files.forEach(file => {
       const reader = new FileReader();
       reader.onload = e => {
-        imgState.gallery[i] = e.target.result;
+        imgState.gallery.push(e.target.result);
         const div = document.createElement('div');
-        div.style.cssText = 'aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--cream-dark);';
-        div.innerHTML = `<img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+        div.style.cssText = 'aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--cream-dark);position:relative;';
+        div.innerHTML = `
+          <img src="${e.target.result}" style="width:100%;height:100%;object-fit:cover;">
+          <button onclick="removeGalleryPhoto(this, ${imgState.gallery.length - 1})" style="position:absolute;top:3px;right:3px;width:18px;height:18px;border-radius:50%;background:rgba(61,46,30,0.7);color:#fff;border:none;cursor:pointer;font-size:0.6rem;display:flex;align-items:center;justify-content:center;">✕</button>
+        `;
         grid.appendChild(div);
         updatePreview();
       };
       reader.readAsDataURL(file);
     });
+    // Reset input so same files can be re-selected
+    input.value = '';
+  }
+
+  window.removeGalleryPhoto = function(btn, index) {
+    imgState.gallery.splice(index, 1);
+    btn.parentElement.remove();
+    // Re-index remaining remove buttons
+    document.querySelectorAll('#gallery-preview button').forEach((b, i) => {
+      b.setAttribute('onclick', `removeGalleryPhoto(this, ${i})`);
+    });
+    updatePreview();
   }
 
   // ── PREVIEW MODE TOGGLE
@@ -1285,7 +1307,6 @@ body {
   window.updateSlug = updateSlug
   window.saveData = saveData
   window.publishInv = publishInv
-
   // ── INIT
   updatePreview();
   updateNav();
