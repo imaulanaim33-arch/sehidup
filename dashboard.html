@@ -1131,7 +1131,12 @@ body {
   window.setPage = function(page) {
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
     event.currentTarget.classList.add('active');
-    if (page === 'new') openNew();
+    if (page === 'new') window.openNew();
+  }
+
+  // ── NEW INVITATION
+  window.openNew = function() {
+    window.location.href = '/editor';
   }
 
   // ── FILTER
@@ -1222,8 +1227,6 @@ body {
     window.showToast('Undangan berhasil dihapus 🗑️')
     await loadInvitations()
     await loadStats()
-  }
-    window.location.href = '/editor';
   }
 
   // ── TOAST
