@@ -3,6 +3,7 @@
     { "source": "/", "destination": "/landing-v2.html" },
     { "source": "/masuk", "destination": "/auth.html" },
     { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/templates", "destination": "/templates.html" },
     { "source": "/editor", "destination": "/editor.html" },
     { "source": "/editor/:id", "destination": "/editor.html" },
     { "source": "/:slug", "destination": "/undangan-router.html" }

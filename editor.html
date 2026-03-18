@@ -300,6 +300,8 @@ body {
 .tpl-thumb.modern { background: linear-gradient(160deg, #2a1f14, #1a1208); }
 .tpl-thumb.botanical { background: linear-gradient(160deg, #f0ebe0, #e4ddd0); }
 .tpl-thumb.islami { background: linear-gradient(160deg, #1a2018, #0e1510); }
+.tpl-thumb.pastel { background: linear-gradient(160deg, #FAE8EC, #EAE4F7); }
+.tpl-thumb.jawa { background: linear-gradient(160deg, #2C1810, #1A0C06); }
 
 .tpl-info { flex: 1; }
 .tpl-name { font-size: 0.82rem; font-weight: 500; color: var(--bark); margin-bottom: 0.15rem; }
@@ -654,6 +656,22 @@ body {
           </div>
           <span class="tpl-badge premium">Premium</span>
         </div>
+        <div class="tpl-option" onclick="selectTemplate('pastel', this)">
+          <div class="tpl-thumb pastel">🌸</div>
+          <div class="tpl-info">
+            <div class="tpl-name">Pastel Romance</div>
+            <div class="tpl-desc">Lembut, romantis, dreamy</div>
+          </div>
+          <span class="tpl-badge premium">Premium</span>
+        </div>
+        <div class="tpl-option" onclick="selectTemplate('jawa', this)">
+          <div class="tpl-thumb jawa">✦</div>
+          <div class="tpl-info">
+            <div class="tpl-name">Jawa Heritage</div>
+            <div class="tpl-desc">Agung, keraton, tradisional</div>
+          </div>
+          <span class="tpl-badge premium">Premium</span>
+        </div>
       </div>
     </div>
 
@@ -989,7 +1007,7 @@ body {
     // Restore template selection
     document.querySelectorAll('.tpl-option').forEach(o => o.classList.remove('selected'))
     const tplOpts = document.querySelectorAll('.tpl-option')
-    const tplMap = { modern: 0, botanical: 1, islami: 2 }
+    const tplMap = { modern: 0, botanical: 1, islami: 2, pastel: 3, jawa: 4 }
     if (tplOpts[tplMap[state.template]]) tplOpts[tplMap[state.template]].classList.add('selected')
 
     markSaved()
