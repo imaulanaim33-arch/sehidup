@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Undangan Pernikahan</title>
+<meta property="og:title" content="Kagungan Dalem Hajad Dalem">
+<meta property="og:description" content="Kami mengundang kehadiran Anda">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --java-dark: #2C1810;
+  --java-mid: #4A2818;
+  --java-brown: #7A4030;
+  --gold: #C9A84C;
+  --gold-light: #E0C170;
+  --gold-dim: #A88A3C;
+  --cream: #F5F0E4;
+  --cream-dark: #EDE5D0;
+  --cream-deeper: #E0D4B8;
+  --parchment: #FAF6EC;
+  --ink: #1A2820;
+  --ink-mid: #3D5448;
+  --ink-soft: #7A9080;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--parchment);
+  font-family: 'EB Garamond', sans-serif;
+  font-weight: 300;
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+/* ── GEOMETRIC PATTERN ── */
+.geo-pattern {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.025;
+  background-image:
+    repeating-linear-gradient(45deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%),
+    repeating-linear-gradient(-45deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%);
+  background-size: 40px 40px;
+}
+
+/* ── LOADING ── */
+#loading-screen {
+  position: fixed; inset: 0; background: var(--java-dark);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 2rem; z-index: 999;
+  transition: opacity 0.8s ease;
+}
+#loading-screen.fade-out { opacity: 0; pointer-events: none; }
+
+.loading-star {
+  width: 60px; height: 60px;
+  animation: rotateStar 3s linear infinite;
+}
+@keyframes rotateStar { to { transform: rotate(360deg); } }
+
+.loading-bismillah {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.8rem;
+  color: var(--gold);
+  opacity: 0.8;
+  letter-spacing: 0.1em;
+}
+.loading-text {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.7rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: rgba(201,168,76,0.5);
+}
+
+/* ── NOT FOUND ── */
+#not-found {
+  display: none; min-height: 100vh;
+  flex-direction: column; align-items: center;
+  justify-content: center; text-align: center; padding: 2rem; gap: 1rem;
+}
+#not-found.show { display: flex; }
+
+/* ── INVITATION ── */
+#invitation { display: none; }
+#invitation.show { display: block; }
+
+/* ── COVER ── */
+#cover {
+  position: fixed; inset: 0; z-index: 50;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 1.5rem; text-align: center; padding: 2rem;
+  background: linear-gradient(160deg, #2C1810 0%, #1A0C06 100%);
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+  overflow: hidden;
+}
+#cover.hidden { opacity: 0; visibility: hidden; }
+
+/* Islamic geometric border on cover */
+#cover::before {
+  content: '';
+  position: absolute; inset: 20px;
+  border: 1px solid rgba(201,168,76,0.25);
+  pointer-events: none;
+}
+#cover::after {
+  content: '';
+  position: absolute; inset: 28px;
+  border: 1px solid rgba(201,168,76,0.1);
+  pointer-events: none;
+}
+
+.cover-corner {
+  position: absolute; width: 40px; height: 40px;
+  border-color: var(--gold); border-style: solid; opacity: 0.5;
+}
+.cover-corner.tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
+.cover-corner.tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
+.cover-corner.bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
+.cover-corner.br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
+
+.cover-bismillah {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  color: var(--gold);
+  opacity: 0.9;
+  letter-spacing: 0.05em;
+  animation: fadeIn 1s ease 0.3s both;
+}
+
+.cover-label {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.6rem; letter-spacing: 0.5em;
+  text-transform: uppercase; color: rgba(201,168,76,0.6);
+  font-weight: 400;
+  animation: fadeIn 1s ease 0.5s both;
+}
+
+.cover-names {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.8rem, 6vw, 3rem);
+  font-weight: 600; color: var(--cream);
+  letter-spacing: 0.1em; line-height: 1.3;
+  animation: fadeIn 1s ease 0.7s both;
+}
+.cover-names .and {
+  display: block;
+  font-family: 'EB Garamond', serif;
+  font-size: 0.7em; font-weight: 400;
+  color: var(--gold); letter-spacing: 0.2em;
+  margin: 0.2em 0;
+}
+
+.cover-gold-line {
+  width: 80px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold), transparent);
+  animation: fadeIn 1s ease 0.9s both;
+}
+
+.cover-date {
+  font-family: 'EB Garamond', sans-serif;
+  font-size: 0.7rem; letter-spacing: 0.25em;
+  color: rgba(201,168,76,0.6); font-weight: 300;
+  animation: fadeIn 1s ease 1s both;
+}
+
+.open-btn {
+  margin-top: 0.5rem;
+  padding: 0.9rem 2.8rem;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s ease;
+  position: relative; overflow: hidden;
+  animation: fadeIn 1s ease 1.2s both;
+}
+.open-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--gold);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s ease; z-index: -1;
+}
+.open-btn:hover { color: var(--java-dark); }
+.open-btn:hover::before { transform: scaleX(1); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ── MAIN ── */
+#main-content { opacity: 0; transition: opacity 0.8s ease; position: relative; z-index: 2; }
+#main-content.visible { opacity: 1; }
+
+/* ── HERO ── */
+.hero-section {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 6rem 2rem 5rem; text-align: center;
+  background: linear-gradient(160deg, #2C1810 0%, #1A0C06 100%);
+  position: relative; overflow: hidden;
+}
+
+/* Star pattern overlay */
+.hero-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle, rgba(201,168,76,0.08) 1px, transparent 1px);
+  background-size: 30px 30px;
+  pointer-events: none;
+}
+
+.hero-border-frame {
+  position: absolute; inset: 2rem;
+  border: 1px solid rgba(201,168,76,0.15);
+  pointer-events: none;
+}
+
+.hero-bismillah {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  color: var(--gold); opacity: 0.8;
+  margin-bottom: 2rem;
+  animation: fadeIn 1s ease 0.3s both;
+}
+
+.hero-label {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.58rem; letter-spacing: 0.5em;
+  text-transform: uppercase; color: rgba(201,168,76,0.5);
+  margin-bottom: 2rem;
+  animation: fadeIn 1s ease 0.5s both;
+}
+
+.hero-pria {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 7vw, 4rem);
+  font-weight: 600; color: var(--cream);
+  letter-spacing: 0.15em; line-height: 1.1;
+  animation: fadeIn 1s ease 0.7s both;
+}
+
+.hero-and {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  color: var(--gold); margin: 1rem 0;
+  animation: fadeIn 1s ease 0.9s both;
+}
+
+.hero-wanita {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2rem, 7vw, 4rem);
+  font-weight: 600; color: var(--cream);
+  letter-spacing: 0.15em; line-height: 1.1;
+  animation: fadeIn 1s ease 1.1s both;
+}
+
+.hero-gold-ornament {
+  display: flex; align-items: center; gap: 1rem;
+  margin: 2rem 0; animation: fadeIn 1s ease 1.3s both;
+}
+.hero-gold-ornament::before, .hero-gold-ornament::after {
+  content: ''; flex: 1; max-width: 80px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-dim));
+}
+.hero-gold-ornament::after {
+  background: linear-gradient(to left, transparent, var(--gold-dim));
+}
+.hero-star { color: var(--gold); font-size: 0.7rem; letter-spacing: 0.3rem; }
+
+.hero-date {
+  font-family: 'EB Garamond', sans-serif;
+  font-size: 0.72rem; letter-spacing: 0.3em;
+  color: rgba(201,168,76,0.6); font-weight: 300;
+  animation: fadeIn 1s ease 1.5s both;
+}
+
+/* ── SECTIONS ── */
+.inv-section {
+  padding: 5rem 2rem; max-width: 720px;
+  margin: 0 auto; text-align: center; position: relative; z-index: 2;
+}
+
+.section-eyebrow {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.58rem; letter-spacing: 0.5em;
+  text-transform: uppercase; color: var(--gold);
+  font-weight: 400; margin-bottom: 0.8rem; display: block;
+}
+
+.section-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 500; color: var(--java-dark);
+  letter-spacing: 0.08em; line-height: 1.3; margin-bottom: 1rem;
+}
+
+.gold-divider {
+  display: flex; align-items: center; gap: 1rem;
+  margin: 1.5rem auto; max-width: 260px;
+}
+.gold-divider::before, .gold-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-dim));
+}
+.gold-divider::after { background: linear-gradient(to left, transparent, var(--gold-dim)); }
+.gold-divider-gem {
+  width: 8px; height: 8px; background: var(--gold);
+  transform: rotate(45deg);
+}
+
+/* ── COUPLE ── */
+.couple-bg { background: linear-gradient(160deg, var(--java-dark) 0%, #3A1C0C 100%); }
+.couple-bg .section-title { color: var(--cream); }
+.couple-bg .gold-divider-gem { background: var(--gold); }
+
+.couple-grid {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 2rem; align-items: center; margin-top: 2.5rem;
+}
+.couple-person { text-align: center; }
+
+.couple-photo-frame {
+  width: 100px; height: 100px;
+  margin: 0 auto 1.2rem;
+  position: relative;
+}
+.couple-photo-frame::before {
+  content: '';
+  position: absolute; inset: -6px;
+  border: 1px solid rgba(201,168,76,0.4);
+  transform: rotate(45deg);
+}
+.couple-photo-inner {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  background: rgba(201,168,76,0.1);
+  border: 2px solid rgba(201,168,76,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem; overflow: hidden;
+}
+.couple-photo-inner img { width: 100%; height: 100%; object-fit: cover; }
+
+.couple-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.1rem; font-weight: 500;
+  color: var(--cream); letter-spacing: 0.08em; margin-bottom: 0.3rem;
+}
+.couple-parents {
+  font-size: 0.7rem; color: rgba(201,168,76,0.6);
+  font-weight: 300; line-height: 1.9;
+}
+.couple-parents strong { color: var(--cream); font-weight: 400; }
+
+.couple-and-sym {
+  font-family: 'EB Garamond', serif;
+  font-size: 3rem; color: var(--gold); opacity: 0.5;
+}
+
+/* ── COUNTDOWN ── */
+.countdown-section {
+  background: var(--cream-dark); padding: 5rem 2rem; text-align: center;
+  position: relative; overflow: hidden;
+}
+.countdown-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(45deg, rgba(201,168,76,0.04) 0, rgba(201,168,76,0.04) 1px, transparent 0, transparent 50%),
+    repeating-linear-gradient(-45deg, rgba(201,168,76,0.04) 0, rgba(201,168,76,0.04) 1px, transparent 0, transparent 50%);
+  background-size: 20px 20px;
+}
+
+.countdown {
+  display: flex; justify-content: center;
+  gap: clamp(1rem, 4vw, 3rem); flex-wrap: wrap; margin-top: 2.5rem; position: relative;
+}
+.cd-item { text-align: center; }
+.cd-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  font-weight: 600; color: var(--java-dark);
+  line-height: 1; display: block;
+}
+.cd-label {
+  font-size: 0.55rem; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--ink-soft);
+  font-weight: 300; margin-top: 0.4rem;
+}
+.cd-sep {
+  font-family: 'EB Garamond', serif;
+  font-size: 2.5rem; color: var(--gold-dim);
+  align-self: flex-start; padding-top: 0.2rem;
+}
+
+/* ── EVENTS ── */
+.events-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; margin-top: 2.5rem;
+}
+.event-card {
+  background: var(--java-dark);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 2rem 1.5rem; text-align: center;
+  position: relative; transition: all 0.3s ease;
+}
+.event-card::before {
+  content: ''; position: absolute;
+  inset: 8px; border: 1px solid rgba(201,168,76,0.1);
+  pointer-events: none;
+}
+
+/* corner gems */
+.event-card-corner {
+  position: absolute; width: 8px; height: 8px;
+  background: var(--gold-dim); transform: rotate(45deg); opacity: 0.6;
+}
+.event-card-corner.tl { top: -4px; left: -4px; }
+.event-card-corner.tr { top: -4px; right: -4px; }
+.event-card-corner.bl { bottom: -4px; left: -4px; }
+.event-card-corner.br { bottom: -4px; right: -4px; }
+
+.event-card:hover { border-color: rgba(201,168,76,0.6); }
+
+.event-type {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.55rem; letter-spacing: 0.4em;
+  text-transform: uppercase; color: var(--gold);
+  font-weight: 400; margin-bottom: 0.5rem;
+}
+.event-name {
+  font-family: 'EB Garamond', serif;
+  font-size: 1.3rem; color: var(--cream); margin-bottom: 1rem;
+}
+.event-detail {
+  font-size: 0.72rem; color: rgba(201,168,76,0.6);
+  line-height: 2; font-weight: 300;
+}
+.event-detail strong { display: block; color: var(--cream); font-weight: 400; font-size: 0.82rem; }
+.map-btn {
+  display: inline-block; margin-top: 1rem;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid rgba(201,168,76,0.3); color: var(--gold);
+  font-size: 0.62rem; font-weight: 400;
+  text-decoration: none; letter-spacing: 0.1em;
+  font-family: 'Cinzel Decorative', serif; text-transform: uppercase;
+  transition: all 0.2s;
+}
+.map-btn:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+
+/* ── LOVE STORY ── */
+.love-story-section { background: var(--java-dark); }
+.love-story-section .section-title { color: var(--cream); }
+
+.timeline {
+  max-width: 500px; margin: 2.5rem auto 0;
+  display: flex; flex-direction: column; gap: 0; text-align: left;
+}
+.timeline-item {
+  display: grid; grid-template-columns: 60px 1fr;
+  gap: 1.2rem; padding-bottom: 2.5rem; position: relative;
+}
+.timeline-item::after {
+  content: ''; position: absolute;
+  left: 29px; top: 36px; width: 2px; bottom: 0;
+  background: linear-gradient(to bottom, rgba(201,168,76,0.3), transparent);
+}
+.timeline-item:last-child::after { display: none; }
+.timeline-item:last-child { padding-bottom: 0; }
+
+.timeline-dot {
+  width: 42px; height: 42px;
+  background: transparent;
+  border: 1px solid rgba(201,168,76,0.5);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; position: relative; z-index: 1;
+  transform: rotate(45deg);
+}
+.timeline-dot-inner {
+  transform: rotate(-45deg);
+  font-size: 0.6rem; font-weight: 500;
+  color: var(--gold); text-align: center; line-height: 1.2;
+  font-family: 'Cinzel Decorative', serif;
+}
+.timeline-content { padding-top: 0.5rem; }
+.timeline-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.9rem; font-weight: 500;
+  color: var(--cream); margin-bottom: 0.4rem; letter-spacing: 0.05em;
+}
+.timeline-text {
+  font-size: 0.78rem; color: rgba(201,168,76,0.6);
+  line-height: 1.8; font-weight: 300;
+}
+
+/* ── GALLERY ── */
+.gallery-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 140px; gap: 4px; margin-top: 2rem;
+}
+.gallery-item {
+  background: rgba(201,168,76,0.08);
+  border: 1px solid rgba(201,168,76,0.15);
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; transition: border-color 0.3s;
+  font-size: 2rem; opacity: 0.5; cursor: pointer;
+}
+.gallery-item:first-child { grid-row: span 2; }
+.gallery-item:hover { border-color: rgba(201,168,76,0.5); }
+.gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+.gallery-item:hover img { transform: scale(1.05); }
+
+/* ── AMPLOP ── */
+.amplop-section-bg { background: var(--cream-dark); }
+
+.amplop-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1.5rem; margin-top: 2rem; max-width: 520px; margin-inline: auto;
+}
+.amplop-card {
+  background: var(--java-dark);
+  border: 1px solid rgba(201,168,76,0.25);
+  padding: 2rem 1.5rem; text-align: center;
+  cursor: pointer; transition: all 0.25s ease;
+  position: relative;
+}
+.amplop-card::before {
+  content: ''; position: absolute; inset: 6px;
+  border: 1px solid rgba(201,168,76,0.08);
+  pointer-events: none;
+}
+.amplop-card:hover { border-color: var(--gold); }
+.amplop-icon { font-size: 1.5rem; margin-bottom: 0.7rem; }
+.amplop-bank {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.58rem; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--gold);
+  font-weight: 400; margin-bottom: 0.3rem;
+}
+.amplop-number {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.1rem; color: var(--cream);
+  margin-bottom: 0.2rem; letter-spacing: 0.08em;
+}
+.amplop-name { font-size: 0.7rem; color: rgba(201,168,76,0.6); font-weight: 300; }
+.amplop-copy { font-size: 0.58rem; color: var(--gold-dim); margin-top: 0.7rem; letter-spacing: 0.1em; }
+
+/* ── RSVP ── */
+.rsvp-section { background: var(--parchment); }
+
+.rsvp-form {
+  max-width: 440px; margin: 2rem auto 0;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.field-group { display: flex; flex-direction: column; gap: 0.4rem; text-align: left; }
+.field-label {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.6rem; font-weight: 400;
+  color: var(--java-dark); letter-spacing: 0.15em; text-transform: uppercase;
+}
+.field-input, .field-select {
+  width: 100%; padding: 0.8rem 1rem;
+  background: transparent;
+  border: none; border-bottom: 1px solid rgba(27,58,45,0.3);
+  font-family: 'EB Garamond', sans-serif;
+  font-size: 0.88rem; font-weight: 300; color: var(--ink);
+  outline: none; transition: border-color 0.2s;
+}
+.field-input:focus, .field-select:focus { border-bottom-color: var(--java-dark); }
+.field-input::placeholder { color: var(--ink-soft); opacity: 0.5; }
+.field-select { cursor: pointer; }
+.field-select option { background: var(--parchment); }
+
+.att-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.att-btn {
+  padding: 0.7rem; border: 1px solid rgba(27,58,45,0.25);
+  background: transparent;
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.65rem; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink-soft); cursor: pointer; transition: all 0.2s;
+}
+.att-btn.active {
+  border-color: var(--java-dark); color: var(--java-dark);
+  background: rgba(27,58,45,0.05);
+}
+
+.submit-btn {
+  width: 100%; padding: 0.9rem;
+  background: var(--java-dark); color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3);
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.7rem; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  margin-top: 0.5rem;
+}
+.submit-btn:hover { background: var(--java-mid); border-color: var(--gold); }
+.submit-btn:disabled { opacity: 0.6; pointer-events: none; }
+
+/* ── GUESTBOOK ── */
+.wishes-list {
+  max-width: 560px; margin: 2rem auto 0;
+  display: flex; flex-direction: column; gap: 1.2rem;
+  max-height: 400px; overflow-y: auto; padding-right: 0.5rem; text-align: left;
+}
+.wishes-list::-webkit-scrollbar { width: 2px; }
+.wishes-list::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+.wish-item {
+  border-left: 2px solid rgba(201,168,76,0.3);
+  padding-left: 1.2rem;
+  animation: fadeIn 0.4s ease;
+}
+@keyframes fadeIn { from { opacity: 0; transform: translateX(-8px); } to { opacity: 1; transform: translateX(0); } }
+
+.wish-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.7rem; color: var(--gold-dim);
+  font-weight: 500; letter-spacing: 0.1em; margin-bottom: 0.3rem;
+}
+.wish-text {
+  font-family: 'EB Garamond', serif;
+  font-size: 1rem; color: var(--ink); line-height: 1.7;
+}
+.wish-time { font-size: 0.6rem; color: var(--ink-soft); margin-top: 0.3rem; font-weight: 200; }
+
+.wish-form {
+  max-width: 440px; margin: 2rem auto 0;
+  display: flex; flex-direction: column; gap: 1rem;
+}
+
+/* ── FOOTER ── */
+.inv-footer {
+  padding: 6rem 2rem; text-align: center;
+  background: linear-gradient(160deg, var(--java-dark) 0%, #140806 100%);
+  position: relative; overflow: hidden;
+}
+.inv-footer::before {
+  content: '';
+  position: absolute; inset: 2rem;
+  border: 1px solid rgba(201,168,76,0.12);
+  pointer-events: none;
+}
+
+.footer-bismillah {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1.5rem, 5vw, 2.5rem);
+  color: var(--gold); opacity: 0.6;
+  margin-bottom: 1.5rem; position: relative; z-index: 1;
+}
+.footer-names {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.5rem, 5vw, 2.8rem);
+  font-weight: 600; color: var(--cream);
+  letter-spacing: 0.12em; margin-bottom: 1.5rem;
+  position: relative; z-index: 1;
+}
+.footer-quote {
+  font-size: 0.75rem; color: rgba(201,168,76,0.4);
+  font-weight: 200; max-width: 420px;
+  margin: 0 auto; line-height: 2.2;
+  font-style: italic; position: relative; z-index: 1;
+}
+
+/* ── WATERMARK ── */
+.watermark {
+  padding: 1.5rem; text-align: center;
+  background: #140806;
+  border-top: 1px solid rgba(201,168,76,0.1);
+}
+.watermark a {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.7rem; letter-spacing: 0.1em;
+  color: rgba(201,168,76,0.3); text-decoration: none;
+  transition: opacity 0.2s;
+}
+.watermark a:hover { opacity: 0.7; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 2rem; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--java-dark); color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.3);
+  padding: 0.7rem 1.5rem; font-size: 0.72rem;
+  font-family: 'Cinzel Decorative', serif; letter-spacing: 0.1em;
+  opacity: 0; transition: all 0.3s; pointer-events: none; z-index: 500; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 500px) {
+  .couple-grid { grid-template-columns: 1fr; gap: 0.5rem; }
+  .couple-and-sym { display: none; }
+  .events-grid { grid-template-columns: 1fr; }
+  .amplop-cards { grid-template-columns: 1fr; }
+  .att-btns { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="geo-pattern"></div>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <svg class="loading-star" viewBox="0 0 60 60" fill="none">
+    <polygon points="30,2 35,22 55,22 39,34 45,55 30,43 15,55 21,34 5,22 25,22" fill="none" stroke="#C9A84C" stroke-width="1.5" opacity="0.8"/>
+    <polygon points="30,10 33,22 46,22 36,29 40,42 30,35 20,42 24,29 14,22 27,22" fill="none" stroke="#C9A84C" stroke-width="0.8" opacity="0.4"/>
+    <circle cx="30" cy="30" r="4" fill="#C9A84C" opacity="0.6"/>
+  </svg>
+  <div class="loading-bismillah">Mugi Manggih Bagya Mulya</div>
+  <div class="loading-text">Membuka Undangan</div>
+</div>
+
+<!-- NOT FOUND -->
+<div id="not-found">
+  <div style="font-size:2rem;color:var(--java-dark);">✦</div>
+  <div style="font-family:'Cinzel',serif;font-size:1.3rem;color:var(--java-dark);letter-spacing:0.1em;">Undangan Tidak Ditemukan</div>
+  <div style="font-size:0.85rem;color:var(--ink-soft);">Link undangan ini tidak valid atau sudah tidak aktif.</div>
+</div>
+
+<!-- INVITATION -->
+<div id="invitation">
+
+  <!-- COVER -->
+  <div id="cover">
+    <div class="cover-corner tl"></div>
+    <div class="cover-corner tr"></div>
+    <div class="cover-corner bl"></div>
+    <div class="cover-corner br"></div>
+    <div class="cover-bismillah">Kagungan Dalem Hajad Dalem Pawiwahan</div>
+    <div class="cover-label">Undangan Pernikahan</div>
+    <div class="cover-names" id="cv-names">
+      Nama<div class="and">&amp;</div>Nama
+    </div>
+    <div class="cover-gold-line"></div>
+    <div class="cover-date" id="cv-date">—</div>
+    <button class="open-btn" onclick="openInvitation()">Buka Undangan</button>
+  </div>
+
+  <!-- MAIN -->
+  <div id="main-content">
+
+    <!-- HERO -->
+    <section class="hero-section reveal">
+      <div class="hero-border-frame"></div>
+      <div class="hero-bismillah">Kagungan Dalem Hajad Dalem Pawiwahan</div>
+      <div class="hero-label">Undangan Pernikahan</div>
+      <div class="hero-pria" id="hero-pria">Nama Pria</div>
+      <div class="hero-and">&amp;</div>
+      <div class="hero-wanita" id="hero-wanita">Nama Wanita</div>
+      <div class="hero-gold-ornament">
+        <div class="hero-star">✦ ✦ ✦</div>
+      </div>
+      <div class="hero-date" id="hero-date">—</div>
+    </section>
+
+    <!-- COUPLE -->
+    <section class="inv-section couple-bg reveal" style="max-width:100%;padding:5rem 2rem;">
+      <div style="max-width:720px;margin:0 auto;">
+        <span class="section-eyebrow">Mempelai</span>
+        <h2 class="section-title">Dua Insan yang Dipersatukan</h2>
+        <div class="gold-divider"><div class="gold-divider-gem"></div></div>
+        <div class="couple-grid">
+          <div class="couple-person">
+            <div class="couple-photo-frame">
+              <div class="couple-photo-inner" id="avatar-pria">🤵</div>
+            </div>
+            <div class="couple-name" id="couple-pria">Nama Pria</div>
+            <div class="couple-parents" id="parents-pria">Putra dari<br>—</div>
+          </div>
+          <div class="couple-and-sym">&amp;</div>
+          <div class="couple-person">
+            <div class="couple-photo-frame">
+              <div class="couple-photo-inner" id="avatar-wanita">👰</div>
+            </div>
+            <div class="couple-name" id="couple-wanita">Nama Wanita</div>
+            <div class="couple-parents" id="parents-wanita">Putri dari<br>—</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COUNTDOWN -->
+    <section class="countdown-section reveal">
+      <div style="max-width:720px;margin:0 auto;">
+        <span class="section-eyebrow">Menghitung Hari</span>
+        <h2 class="section-title">Waktu Menuju Hari Bahagia</h2>
+        <div class="gold-divider"><div class="gold-divider-gem"></div></div>
+        <div class="countdown">
+          <div class="cd-item"><span class="cd-num" id="cd-d">00</span><span class="cd-label">Hari</span></div>
+          <div class="cd-sep">✦</div>
+          <div class="cd-item"><span class="cd-num" id="cd-h">00</span><span class="cd-label">Jam</span></div>
+          <div class="cd-sep">✦</div>
+          <div class="cd-item"><span class="cd-num" id="cd-m">00</span><span class="cd-label">Menit</span></div>
+          <div class="cd-sep">✦</div>
+          <div class="cd-item"><span class="cd-num" id="cd-s">00</span><span class="cd-label">Detik</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EVENTS -->
+    <section class="inv-section reveal">
+      <span class="section-eyebrow">Rangkaian Acara</span>
+      <h2 class="section-title">Turut Hadir & Doakan Kami</h2>
+      <div class="gold-divider"><div class="gold-divider-gem"></div></div>
+      <div class="events-grid" id="event-cards"></div>
+    </section>
+
+    <!-- LOVE STORY -->
+    <section class="inv-section love-story-section reveal" id="love-story-section" style="display:none;max-width:100%;padding:5rem 2rem;">
+      <div style="max-width:720px;margin:0 auto;">
+        <span class="section-eyebrow">Perjalanan Cinta</span>
+        <h2 class="section-title">Kisah Kita</h2>
+        <div class="gold-divider"><div class="gold-divider-gem"></div></div>
+        <div class="timeline" id="timeline"></div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="inv-section reveal" id="gallery-section" style="display:none;">
+      <span class="section-eyebrow">Galeri</span>
+      <h2 class="section-title">Momen Bersama</h2>
+      <div class="gold-divider"><div class="gold-divider-gem"></div></div>
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </section>
+
+    <!-- AMPLOP -->
+    <section class="inv-section amplop-section-bg reveal" id="amplop-section" style="display:none;max-width:100%;padding:5rem 2rem;">
+      <div style="max-width:720px;margin:0 auto;">
+        <span class="section-eyebrow">Amplop Digital</span>
+        <h2 class="section-title">Hadiah & Doa</h2>
+        <div class="gold-divider"><div class="gold-divider-gem"></div></div>
+        <p style="font-size:0.85rem;color:var(--ink-soft);line-height:2;margin-bottom:0.5rem;">Doa restu Anda adalah hadiah terbaik bagi kami.</p>
+        <div class="amplop-cards" id="amplop-cards"></div>
+      </div>
+    </section>
+
+    <!-- RSVP -->
+    <section class="inv-section rsvp-section reveal">
+      <span class="section-eyebrow">Konfirmasi Kehadiran</span>
+      <h2 class="section-title">Apakah Anda Hadir?</h2>
+      <div class="gold-divider"><div class="gold-divider-gem"></div></div>
+      <div id="rsvp-success" style="display:none;padding:1.5rem;border:1px solid rgba(27,58,45,0.2);margin-top:1.5rem;text-align:center;">
+        <div style="font-size:1.5rem;margin-bottom:0.5rem;">✦</div>
+        <div style="font-family:'Cinzel',serif;font-size:1rem;letter-spacing:0.1em;color:var(--java-dark);" id="rsvp-success-name">—</div>
+        <div style="font-size:0.78rem;color:var(--ink-soft);margin-top:0.3rem;" id="rsvp-success-status">—</div>
+      </div>
+      <form class="rsvp-form" id="rsvp-form" onsubmit="submitRSVP(event)">
+        <div class="field-group">
+          <label class="field-label">Nama Lengkap</label>
+          <input type="text" class="field-input" id="rsvp-name" placeholder="Nama kamu" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Kehadiran</label>
+          <div class="att-btns">
+            <button type="button" class="att-btn active" id="att-hadir" onclick="setAtt('hadir')">Hadir</button>
+            <button type="button" class="att-btn" id="att-tidak" onclick="setAtt('tidak')">Tidak Hadir</button>
+          </div>
+        </div>
+        <div class="field-group" id="jumlah-wrap">
+          <label class="field-label">Jumlah Tamu</label>
+          <select class="field-select" id="rsvp-count">
+            <option value="1">1 orang</option>
+            <option value="2">2 orang</option>
+            <option value="3">3 orang</option>
+            <option value="4">4 orang</option>
+          </select>
+        </div>
+        <button type="submit" class="submit-btn" id="rsvp-btn">Kirim Konfirmasi</button>
+      </form>
+    </section>
+
+    <!-- GUESTBOOK -->
+    <section class="inv-section reveal" style="background:var(--cream-dark);">
+      <span class="section-eyebrow">Buku Tamu</span>
+      <h2 class="section-title">Tulis Doa & Ucapan</h2>
+      <div class="gold-divider"><div class="gold-divider-gem"></div></div>
+      <div class="wishes-list" id="wishes-list">
+        <div style="text-align:center;padding:2rem;color:var(--ink-soft);font-size:0.8rem;">Belum ada ucapan</div>
+      </div>
+      <form class="wish-form" onsubmit="submitWish(event)">
+        <div class="field-group">
+          <label class="field-label">Nama</label>
+          <input type="text" class="field-input" id="wish-name" placeholder="Nama kamu" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Ucapan & Doa</label>
+          <textarea class="field-input" id="wish-text" placeholder="Tuliskan doa terbaik kamu..." required style="min-height:80px;resize:none;"></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Kirim Ucapan</button>
+      </form>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="inv-footer">
+      <div class="footer-bismillah">Mugi Manggih Bagya Mulya</div>
+      <div class="footer-names" id="footer-names">—</div>
+      <div class="footer-quote" id="footer-quote">
+        "&amp;مِنْ آيَاتِهِ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْ&amp;اجًا"<br>
+        <em style="font-size:0.65rem;letter-spacing:0.05em;font-style:normal;">Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup — QS. Ar-Rum: 21</em>
+      </div>
+    </footer>
+
+    <div class="watermark" id="watermark">
+      <a href="https://sehidup.vercel.app">Dibuat dengan sehidup.vercel.app</a>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient(
+    'https://bndcowyyahiythrunxve.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuZGNvd3l5YWhpeXRocnVueHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MDEyMDUsImV4cCI6MjA4OTI3NzIwNX0.UMUrdBI5M2H1FQKzQqM_CCqugmuEVKWfo0oF0DuYt4I'
+  )
+
+  let invId = null, attendance = 'hadir'
+
+  function getSlug() {
+    return new URLSearchParams(window.location.search).get('slug')
+      || window.location.pathname.replace('/', '').replace('.html', '')
+      || null
+  }
+
+  async function init() {
+    const slug = getSlug()
+    if (!slug || slug === 'undangan-jawa') { showNotFound(); return }
+
+    const { data, error } = await supabase
+      .from('invitations').select('*')
+      .eq('slug', slug).eq('status', 'active').single()
+
+    if (error || !data) { showNotFound(); return }
+
+    invId = data.id
+    const d = data.data || {}
+
+    await supabase.from('invitations').update({ view_count: (data.view_count || 0) + 1 }).eq('id', invId)
+
+    const { data: profile } = await supabase.from('profiles').select('plan, plan_expires_at').eq('id', data.user_id).single()
+    if (profile?.plan === 'premium' && new Date(profile.plan_expires_at) > new Date()) {
+      document.getElementById('watermark').style.display = 'none'
+    }
+
+    populateUI(data, d)
+    await loadGuestbook()
+    hideLoading()
+  }
+
+  function showNotFound() {
+    document.getElementById('loading-screen').classList.add('fade-out')
+    setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; document.getElementById('not-found').classList.add('show') }, 600)
+  }
+
+  function hideLoading() {
+    document.getElementById('loading-screen').classList.add('fade-out')
+    setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; document.getElementById('invitation').classList.add('show') }, 600)
+  }
+
+  function populateUI(inv, d) {
+    const pria = d.pria?.panggilan || d.pria?.nama || 'Mempelai Pria'
+    const wanita = d.wanita?.panggilan || d.wanita?.nama || 'Mempelai Wanita'
+    const tanggal = d.akad?.tanggal
+      ? new Date(d.akad.tanggal + 'T00:00:00').toLocaleDateString('id-ID', { weekday:'long', day:'numeric', month:'long', year:'numeric' })
+      : '—'
+
+    document.title = `Undangan Pernikahan ${pria} & ${wanita}`
+    document.querySelector('meta[property="og:title"]').content = `Undangan Pernikahan ${pria} & ${wanita}`
+
+    document.getElementById('cv-names').innerHTML = `${pria}<div class="and">&amp;</div>${wanita}`
+    document.getElementById('cv-date').textContent = tanggal
+    document.getElementById('hero-pria').textContent = pria
+    document.getElementById('hero-wanita').textContent = wanita
+    document.getElementById('hero-date').textContent = tanggal
+
+    if (d.photos?.pria) {
+      document.getElementById('avatar-pria').innerHTML = `<img src="${d.photos.pria}">`
+      const img = document.createElement('img')
+      img.src = d.photos.pria
+      img.style.cssText = 'width:70px;height:70px;border-radius:50%;object-fit:cover;border:2px solid rgba(201,168,76,0.4);margin-bottom:0.5rem;'
+      document.getElementById('cover').insertBefore(img, document.getElementById('cv-names'))
+    }
+    if (d.photos?.wanita) document.getElementById('avatar-wanita').innerHTML = `<img src="${d.photos.wanita}">`
+
+    document.getElementById('couple-pria').textContent = d.pria?.nama || pria
+    document.getElementById('couple-wanita').textContent = d.wanita?.nama || wanita
+    if (d.pria?.ayah || d.pria?.ibu) document.getElementById('parents-pria').innerHTML = `Putra dari<br><strong>${d.pria.ayah||'—'}</strong><br>& ${d.pria.ibu||'—'}`
+    if (d.wanita?.ayah || d.wanita?.ibu) document.getElementById('parents-wanita').innerHTML = `Putri dari<br><strong>${d.wanita.ayah||'—'}</strong><br>& ${d.wanita.ibu||'—'}`
+
+    if (d.akad?.tanggal) startCountdown(d.akad.tanggal, d.akad.mulai || '08:00')
+
+    const eventsEl = document.getElementById('event-cards')
+    eventsEl.innerHTML = ''
+    if (d.akad?.lokasi) {
+      eventsEl.innerHTML += `<div class="event-card">
+        <div class="event-card-corner tl"></div><div class="event-card-corner tr"></div>
+        <div class="event-card-corner bl"></div><div class="event-card-corner br"></div>
+        <div class="event-type">Akad Nikah</div>
+        <div class="event-name">Ijab Qabul</div>
+        <div class="event-detail"><strong>${tanggal}</strong>${d.akad.mulai||'08:00'} – ${d.akad.selesai||'10:00'} WIB<br><br><strong>${d.akad.lokasi}</strong>${d.akad.alamat||''}</div>
+        ${d.akad.maps ? `<a href="${d.akad.maps}" target="_blank" class="map-btn">Lihat Peta</a>` : ''}</div>`
+    }
+    if (d.resepsi?.lokasi) {
+      const resTgl = d.resepsi.tanggal ? new Date(d.resepsi.tanggal+'T00:00:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'}) : tanggal
+      eventsEl.innerHTML += `<div class="event-card">
+        <div class="event-card-corner tl"></div><div class="event-card-corner tr"></div>
+        <div class="event-card-corner bl"></div><div class="event-card-corner br"></div>
+        <div class="event-type">Resepsi</div>
+        <div class="event-name">Walimatul 'Ursy</div>
+        <div class="event-detail"><strong>${resTgl}</strong>${d.resepsi.mulai||'11:00'} – ${d.resepsi.selesai||'15:00'} WIB<br><br><strong>${d.resepsi.lokasi}</strong>${d.resepsi.alamat||''}</div>
+        ${d.resepsi.maps ? `<a href="${d.resepsi.maps}" target="_blank" class="map-btn">Lihat Peta</a>` : ''}</div>`
+    }
+
+    if (d.loveStory?.length) {
+      document.getElementById('love-story-section').style.display = 'block'
+      document.getElementById('timeline').innerHTML = d.loveStory.map(item => `
+        <div class="timeline-item">
+          <div class="timeline-dot"><div class="timeline-dot-inner">${item.tahun||'—'}</div></div>
+          <div class="timeline-content">
+            <div class="timeline-title">${item.judul||''}</div>
+            <div class="timeline-text">${item.cerita||''}</div>
+          </div>
+        </div>`).join('')
+    }
+
+    if (d.photos?.gallery?.length) {
+      document.getElementById('gallery-section').style.display = 'block'
+      document.getElementById('gallery-grid').innerHTML = d.photos.gallery.map(url => `<div class="gallery-item"><img src="${url}"></div>`).join('')
+    }
+
+    if (d.amplop?.bank1 && d.amplop?.rek1) {
+      document.getElementById('amplop-section').style.display = 'block'
+      let html = amplopCard(d.amplop.bank1, d.amplop.rek1, d.amplop.nama1)
+      if (d.amplop.bank2 && d.amplop.rek2) html += amplopCard(d.amplop.bank2, d.amplop.rek2, d.amplop.nama2)
+      document.getElementById('amplop-cards').innerHTML = html
+    }
+
+    document.getElementById('footer-names').textContent = `${pria} & ${wanita}`
+    if (d.kutipan) document.getElementById('footer-quote').innerHTML = d.kutipan
+
+    if (d.bgm) {
+      const bgmMap = {
+        'Canon in D — Pachelbel': 'https://upload.wikimedia.org/wikipedia/commons/b/b5/Johann_Pachelbel_-_Canon_in_D_major.ogg',
+        'A Thousand Years — Christina Perri': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3',
+        'Perfect — Ed Sheeran': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-6.mp3',
+        'Thinking Out Loud — Ed Sheeran': 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+      }
+      const src = bgmMap[d.bgm]
+      if (src) {
+        const audio = document.createElement('audio')
+        audio.src = src; audio.loop = true; audio.volume = 0.3
+        document.body.appendChild(audio)
+        window._bgmAudio = audio
+      }
+    }
+  }
+
+  function amplopCard(bank, rek, nama) {
+    return `<div class="amplop-card" onclick="copyRek('${rek}','${bank}')">
+      <div class="amplop-icon">✦</div>
+      <div class="amplop-bank">${bank}</div>
+      <div class="amplop-number">${rek}</div>
+      <div class="amplop-name">${nama||'—'}</div>
+      <div class="amplop-copy">Klik untuk salin</div></div>`
+  }
+
+  function startCountdown(dateStr, timeStr) {
+    const target = new Date(`${dateStr}T${timeStr}:00`)
+    function update() {
+      const diff = target - new Date()
+      if (diff <= 0) { ['cd-d','cd-h','cd-m','cd-s'].forEach(id => document.getElementById(id).textContent = '00'); return }
+      document.getElementById('cd-d').textContent = String(Math.floor(diff/86400000)).padStart(2,'0')
+      document.getElementById('cd-h').textContent = String(Math.floor((diff%86400000)/3600000)).padStart(2,'0')
+      document.getElementById('cd-m').textContent = String(Math.floor((diff%3600000)/60000)).padStart(2,'0')
+      document.getElementById('cd-s').textContent = String(Math.floor((diff%60000)/1000)).padStart(2,'0')
+    }
+    update(); setInterval(update, 1000)
+  }
+
+  async function loadGuestbook() {
+    const { data } = await supabase.from('guestbook').select('*')
+      .eq('invitation_id', invId).order('created_at', { ascending: false }).limit(20)
+    if (!data?.length) return
+    const list = document.getElementById('wishes-list')
+    list.innerHTML = ''
+    data.forEach(w => addWishItem(w.name, w.message, w.created_at))
+  }
+
+  function addWishItem(name, text, createdAt) {
+    const list = document.getElementById('wishes-list')
+    const timeAgo = createdAt ? new Date(createdAt).toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'}) : 'Baru saja'
+    const item = document.createElement('div')
+    item.className = 'wish-item'
+    item.innerHTML = `<div class="wish-name">${name}</div><div class="wish-text">${text}</div><div class="wish-time">${timeAgo}</div>`
+    list.insertBefore(item, list.firstChild)
+  }
+
+  window.openInvitation = function() {
+    document.getElementById('cover').classList.add('hidden')
+    document.getElementById('main-content').classList.add('visible')
+    initReveal()
+    if (window._bgmAudio) window._bgmAudio.play().catch(() => {})
+  }
+
+  function initReveal() {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target) } })
+    }, { threshold: 0.1 })
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el))
+  }
+
+  window.setAtt = function(val) {
+    attendance = val
+    document.getElementById('att-hadir').classList.toggle('active', val === 'hadir')
+    document.getElementById('att-tidak').classList.toggle('active', val === 'tidak')
+    document.getElementById('jumlah-wrap').style.display = val === 'hadir' ? 'flex' : 'none'
+  }
+
+  window.submitRSVP = async function(e) {
+    e.preventDefault()
+    const name = document.getElementById('rsvp-name').value.trim()
+    const count = attendance === 'hadir' ? parseInt(document.getElementById('rsvp-count').value) : 0
+    const btn = document.getElementById('rsvp-btn')
+    btn.disabled = true; btn.textContent = 'Mengirim...'
+    const { error } = await supabase.from('rsvp').insert({ invitation_id: invId, name, attendance, guest_count: count })
+    if (error) { showToast('Gagal mengirim'); btn.disabled = false; btn.textContent = 'Kirim Konfirmasi'; return }
+    document.getElementById('rsvp-form').style.display = 'none'
+    document.getElementById('rsvp-success').style.display = 'block'
+    document.getElementById('rsvp-success-name').textContent = name
+    document.getElementById('rsvp-success-status').textContent = attendance === 'hadir' ? `Hadir (${count} orang) ✦` : 'Tidak hadir'
+    showToast('Konfirmasi terkirim ✦')
+  }
+
+  window.submitWish = async function(e) {
+    e.preventDefault()
+    const name = document.getElementById('wish-name').value.trim()
+    const message = document.getElementById('wish-text').value.trim()
+    const btn = e.target.querySelector('.submit-btn')
+    btn.disabled = true; btn.textContent = 'Mengirim...'
+    const { error } = await supabase.from('guestbook').insert({ invitation_id: invId, name, message })
+    if (error) { showToast('Gagal mengirim'); btn.disabled = false; btn.textContent = 'Kirim Ucapan'; return }
+    addWishItem(name, message, null)
+    e.target.reset()
+    btn.disabled = false; btn.textContent = 'Kirim Ucapan'
+    showToast('Ucapan terkirim ✦')
+  }
+
+  window.copyRek = function(rek, bank) {
+    navigator.clipboard.writeText(rek).catch(() => {})
+    showToast(`${bank} · ${rek} disalin`)
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast')
+    t.textContent = msg; t.classList.add('show')
+    setTimeout(() => t.classList.remove('show'), 2800)
+  }
+
+  init()
+</script>
+</body>
+</html>
