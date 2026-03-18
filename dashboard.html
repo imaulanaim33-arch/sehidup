@@ -529,6 +529,8 @@ body {
 .inv-action-btn.delete {
   background: var(--red-bg);
   color: var(--red-soft);
+  flex: 0;
+  padding: 0.55rem 0.7rem;
 }
 .inv-action-btn.delete:hover { background: rgba(224,128,128,0.2); }
 
@@ -1070,12 +1072,8 @@ body {
           <div class="inv-expiry ok"><span>🔗</span> sehidup.vercel.app/${inv.slug}</div>
           <div class="inv-actions">
             <button class="inv-action-btn edit" onclick="window.location.href='/editor?id=${inv.id}'">✏️ Edit</button>
-            ${inv.status === 'active'
-              ? `<button class="inv-action-btn share" onclick="window.openShare('sehidup.vercel.app/${inv.slug}')">🔗 Bagikan</button>
-                 <button class="inv-action-btn view" onclick="window.open('/undangan.html?slug=${inv.slug}')">👁️ Lihat</button>`
-              : `<button class="inv-action-btn share" style="opacity:0.4;pointer-events:none;">🔗 Bagikan</button>`
-            }
-            <button class="inv-action-btn delete" onclick="window.confirmDelete('${inv.id}', '${pria} & ${wanita}')">🗑️</button>
+            ${inv.status === 'active' ? '<button class="inv-action-btn share" onclick="window.openShare(\'sehidup.vercel.app/' + inv.slug + '\')">🔗 Bagikan</button><button class="inv-action-btn view" onclick="window.open(\'/undangan.html?slug=' + inv.slug + '\')">👁️ Lihat</button>' : '<button class="inv-action-btn share" style="opacity:0.4;pointer-events:none;">🔗 Bagikan</button>'}
+            <button class="inv-action-btn delete" onclick="window.confirmDelete('${inv.id}', '${pria} &amp; ${wanita}')">🗑️</button>
           </div>
         </div>`
       grid.appendChild(card)
