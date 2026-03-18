@@ -951,6 +951,19 @@ body {
     // Load existing invitation if ?id= param exists
     const params = new URLSearchParams(window.location.search)
     const id = params.get('id')
+    const templateParam = params.get('template')
+
+    // Pre-select template from URL param
+    if (templateParam && !id) {
+      state.template = templateParam
+      document.querySelectorAll('.tpl-option').forEach(o => o.classList.remove('selected'))
+      const tplMap = { modern: 0, botanical: 1, islami: 2, pastel: 3, jawa: 4 }
+      const idx = tplMap[templateParam]
+      const opts = document.querySelectorAll('.tpl-option')
+      if (opts[idx]) opts[idx].classList.add('selected')
+      updatePreview()
+    }
+
     if (id) {
       invitationId = id
       await loadInvitation(id)

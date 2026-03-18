@@ -187,9 +187,8 @@ nav {
   text-transform: uppercase; font-weight: 300;
 }
 
-/* Hover overlay */
-.tc-preview::after {
-  content: 'Lihat Demo →';
+/* Hover overlay - handled by JS */
+.tc-overlay {
   position: absolute; inset: 0;
   background: rgba(0,0,0,0.25);
   display: flex; align-items: center; justify-content: center;
@@ -198,8 +197,10 @@ nav {
   letter-spacing: 0.15em; text-transform: uppercase;
   color: #fff; opacity: 0; transition: opacity 0.3s;
   backdrop-filter: blur(2px);
+  text-decoration: none;
+  cursor: pointer;
 }
-.template-card:hover .tc-preview::after { opacity: 1; }
+.template-card:hover .tc-overlay { opacity: 1; }
 
 /* Badges */
 .tc-badge {
@@ -257,7 +258,7 @@ nav {
   <a href="/" class="nav-logo">Sehi<span>dup</span></a>
   <div class="nav-right">
     <a href="/" class="nav-back">← Beranda</a>
-    <a href="/masuk" class="nav-cta">Mulai Gratis</a>
+    <a href="/masuk" class="nav-cta" id="nav-cta">Mulai Gratis</a>
   </div>
 </nav>
 
@@ -283,6 +284,7 @@ nav {
   <!-- Modern -->
   <div class="template-card" data-plan="free" data-theme="gelap">
     <div class="tc-preview modern">
+      <a href="/undangan.html?slug=demo-modern" target="_blank" class="tc-overlay">Lihat Demo →</a>
       <span class="tc-badge free">Gratis</span>
       <div class="tp-ornament">✦</div>
       <div class="tp-name">Rizky<br>& Aulia</div>
@@ -293,8 +295,8 @@ nav {
       <div class="tc-name">Modern Elegance</div>
       <div class="tc-desc">Minimalis, gelap, berkelas</div>
       <div class="tc-actions">
-        <a href="/demo-modern" class="btn-demo">Lihat Demo</a>
-        <a href="/masuk" class="btn-use">Pakai Template</a>
+        <a href="/undangan.html?slug=demo-modern" target="_blank" class="btn-demo">Lihat Demo</a>
+        <a href="#" class="btn-use" onclick="useTemplate('modern')">Pakai Template</a>
       </div>
     </div>
   </div>
@@ -302,6 +304,7 @@ nav {
   <!-- Botanical -->
   <div class="template-card" data-plan="premium" data-theme="terang">
     <div class="tc-preview botanical">
+      <a href="/undangan.html?slug=demo-botanical" target="_blank" class="tc-overlay">Lihat Demo →</a>
       <span class="tc-badge premium">Premium</span>
       <div class="tp-ornament">🌿</div>
       <div class="tp-name">Dimas<br>& Nisa</div>
@@ -312,8 +315,8 @@ nav {
       <div class="tc-name">Botanical Garden</div>
       <div class="tc-desc">Natural, hangat, earthy</div>
       <div class="tc-actions">
-        <a href="/demo-botanical" class="btn-demo">Lihat Demo</a>
-        <a href="/masuk" class="btn-use">Pakai Template</a>
+        <a href="/undangan.html?slug=demo-botanical" target="_blank" class="btn-demo">Lihat Demo</a>
+        <a href="#" class="btn-use" onclick="useTemplate('botanical')">Pakai Template</a>
       </div>
     </div>
   </div>
@@ -321,6 +324,7 @@ nav {
   <!-- Islami -->
   <div class="template-card" data-plan="premium" data-theme="gelap">
     <div class="tc-preview islami">
+      <a href="/undangan-islami.html?slug=demo-islami" target="_blank" class="tc-overlay">Lihat Demo →</a>
       <span class="tc-badge premium">Premium</span>
       <div class="tp-ornament">✦</div>
       <div class="tp-name">Fajar<br>& Hana</div>
@@ -331,8 +335,8 @@ nav {
       <div class="tc-name">Islami Graceful</div>
       <div class="tc-desc">Sakral, agung, bermakna</div>
       <div class="tc-actions">
-        <a href="/demo-islami" class="btn-demo">Lihat Demo</a>
-        <a href="/masuk" class="btn-use">Pakai Template</a>
+        <a href="/undangan-islami.html?slug=demo-islami" target="_blank" class="btn-demo">Lihat Demo</a>
+        <a href="#" class="btn-use" onclick="useTemplate('islami')">Pakai Template</a>
       </div>
     </div>
   </div>
@@ -340,6 +344,7 @@ nav {
   <!-- Pastel -->
   <div class="template-card" data-plan="premium" data-theme="terang">
     <div class="tc-preview pastel">
+      <a href="/undangan-pastel.html?slug=demo-pastel" target="_blank" class="tc-overlay">Lihat Demo →</a>
       <span class="tc-badge premium">Premium</span>
       <div class="tp-ornament">🌸</div>
       <div class="tp-name">Andi<br>& Maya</div>
@@ -350,8 +355,8 @@ nav {
       <div class="tc-name">Pastel Romance</div>
       <div class="tc-desc">Lembut, romantis, dreamy</div>
       <div class="tc-actions">
-        <a href="/demo-pastel" class="btn-demo">Lihat Demo</a>
-        <a href="/masuk" class="btn-use">Pakai Template</a>
+        <a href="/undangan-pastel.html?slug=demo-pastel" target="_blank" class="btn-demo">Lihat Demo</a>
+        <a href="#" class="btn-use" onclick="useTemplate('pastel')">Pakai Template</a>
       </div>
     </div>
   </div>
@@ -359,6 +364,7 @@ nav {
   <!-- Jawa -->
   <div class="template-card" data-plan="premium" data-theme="gelap">
     <div class="tc-preview jawa">
+      <a href="/undangan-jawa.html?slug=demo-jawa" target="_blank" class="tc-overlay">Lihat Demo →</a>
       <span class="tc-badge premium">Premium</span>
       <div class="tp-ornament">✦</div>
       <div class="tp-name">Budi<br>& Sari</div>
@@ -369,16 +375,42 @@ nav {
       <div class="tc-name">Jawa Heritage</div>
       <div class="tc-desc">Agung, keraton, tradisional</div>
       <div class="tc-actions">
-        <a href="/demo-jawa" class="btn-demo">Lihat Demo</a>
-        <a href="/masuk" class="btn-use">Pakai Template</a>
+        <a href="/undangan-jawa.html?slug=demo-jawa" target="_blank" class="btn-demo">Lihat Demo</a>
+        <a href="#" class="btn-use" onclick="useTemplate('jawa')">Pakai Template</a>
       </div>
     </div>
   </div>
 
 </div>
 
-<script>
-  function filterTemplates(filter, btn) {
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
+  const supabase = createClient(
+    'https://bndcowyyahiythrunxve.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuZGNvd3l5YWhpeXRocnVueHZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3MDEyMDUsImV4cCI6MjA4OTI3NzIwNX0.UMUrdBI5M2H1FQKzQqM_CCqugmuEVKWfo0oF0DuYt4I'
+  )
+
+  // ── CHECK LOGIN STATUS
+  const { data: { session } } = await supabase.auth.getSession()
+  const navCta = document.getElementById('nav-cta')
+  if (session) {
+    navCta.textContent = 'Dashboard'
+    navCta.href = '/dashboard'
+  }
+
+  // ── USE TEMPLATE
+  window.useTemplate = function(template) {
+    if (!session) {
+      // Not logged in - go to login with template param
+      window.location.href = '/masuk?next=/editor&template=' + template
+    } else {
+      // Logged in - go directly to editor with template pre-selected
+      window.location.href = '/editor?template=' + template
+    }
+  }
+
+  // ── FILTER
+  window.filterTemplates = function(filter, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
     btn.classList.add('active')
     document.querySelectorAll('.template-card').forEach(card => {
