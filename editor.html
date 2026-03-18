@@ -777,6 +777,11 @@ body {
         <label class="field-label">Alamat Lengkap</label>
         <textarea class="field-textarea" id="resepsi-alamat" placeholder="Jl. Karet Semanggi, Jakarta Selatan" oninput="updatePreview()" style="min-height:56px;"></textarea>
       </div>
+      <div class="field-group">
+        <label class="field-label">Link Google Maps</label>
+        <input type="url" class="field-input" id="resepsi-maps" placeholder="https://maps.google.com/..." oninput="updatePreview()">
+        <span class="field-hint">Buka Google Maps → Share → Copy link</span>
+      </div>
     </div>
 
     <!-- Step 3: Foto -->
@@ -1005,6 +1010,7 @@ body {
     setVal('resepsi-selesai', d.resepsi?.selesai)
     setVal('resepsi-lokasi', d.resepsi?.lokasi)
     setVal('resepsi-alamat', d.resepsi?.alamat)
+    setVal('resepsi-maps', d.resepsi?.maps)
     setVal('bank1', d.amplop?.bank1)
     setVal('rek1', d.amplop?.rek1)
     setVal('nama-rek1', d.amplop?.nama1)
